@@ -13,6 +13,7 @@ import { PERSONAL_INFO } from '../data/portfolioData.ts';
 
 interface NavbarProps {
   onOpenResume: () => void;
+  onOpenAvatar?: () => void;
 }
 
 interface NavItem {
@@ -21,7 +22,7 @@ interface NavItem {
   id: string;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenResume }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenResume, onOpenAvatar }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState<string>('hero');

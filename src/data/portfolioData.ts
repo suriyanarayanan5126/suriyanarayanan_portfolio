@@ -110,15 +110,13 @@ export const PROJECTS_DATA: Project[] = [
     ],
     interactiveType: "smart-home",
     hasVideoSlot: true,
-    videoPath: "/videos/home automation video(1).mp4",
+    videoPath: "/videos/home%20automation%20video(1).mp4",
     videoFileName: "home automation video(1).mp4",
     uploadedFileName: "home automation video(1).mp4",
     thumbnailUrl: "/assets/projects/iot-smart-home-thumb.jpg",
     videoAliases: [
       "home automation video(1).mp4",
-      "home_automation_video_1.mp4",
-      "iot-smart-home.mp4",
-      "smart-home.mp4"
+      "home automation video.mp4"
     ]
   },
   {
@@ -137,14 +135,13 @@ export const PROJECTS_DATA: Project[] = [
     ],
     interactiveType: "visitor-counter",
     hasVideoSlot: true,
-    videoPath: "/videos/visitor counter video(1).mp4",
+    videoPath: "/videos/visitor%20counter%20video(1).mp4",
     videoFileName: "visitor counter video(1).mp4",
     uploadedFileName: "visitor counter video(1).mp4",
     thumbnailUrl: "/assets/projects/visitor-counter-thumb.jpg",
     videoAliases: [
       "visitor counter video(1).mp4",
-      "visitor_counter_video_1.mp4",
-      "visitor-counter.mp4"
+      "visitor counter video.mp4"
     ]
   },
   {
@@ -162,14 +159,13 @@ export const PROJECTS_DATA: Project[] = [
     ],
     interactiveType: "scrolling-display",
     hasVideoSlot: true,
-    videoPath: "/videos/smart scrolling display video(1).mp4",
+    videoPath: "/videos/smart%20scrolling%20display%20video(1).mp4",
     videoFileName: "smart scrolling display video(1).mp4",
     uploadedFileName: "smart scrolling display video(1).mp4",
     thumbnailUrl: "/assets/projects/scrolling-display-thumb.jpg",
     videoAliases: [
       "smart scrolling display video(1).mp4",
-      "smart_scrolling_display_video_1.mp4",
-      "scrolling-display.mp4"
+      "smart scrolling display video.mp4"
     ]
   },
   {
@@ -187,14 +183,13 @@ export const PROJECTS_DATA: Project[] = [
     ],
     interactiveType: "salary-predictor",
     hasVideoSlot: true,
-    videoPath: "/videos/suriya ai video(1).mp4",
+    videoPath: "/videos/suriya%20ai%20video(1).mp4",
     videoFileName: "suriya ai video(1).mp4",
     uploadedFileName: "suriya ai video(1).mp4",
     thumbnailUrl: "/assets/projects/suriya-ai-thumb.jpg",
     videoAliases: [
       "suriya ai video(1).mp4",
-      "suriya_ai_video_1.mp4",
-      "salary-prediction.mp4"
+      "suriya ai video.mp4"
     ]
   },
   {
@@ -211,14 +206,13 @@ export const PROJECTS_DATA: Project[] = [
       "Night illumination LED headlights and live video camera streaming"
     ],
     hasVideoSlot: true,
-    videoPath: "/videos/survilliance car video(1).mp4",
+    videoPath: "/videos/survilliance%20car%20video(1).mp4",
     videoFileName: "survilliance car video(1).mp4",
     uploadedFileName: "survilliance car video(1).mp4",
     thumbnailUrl: "/assets/projects/surveillance-car-thumb.jpg",
     videoAliases: [
       "survilliance car video(1).mp4",
-      "survilliance_car_video_1.mp4",
-      "surveillance-car.mp4"
+      "survilliance car video.mp4"
     ]
   },
   {
@@ -557,4 +551,4 @@ export const ACHIEVEMENTS_DATA = [
 ];
 
 export const AVATAR_SPEECH_SCRIPT = 
-  "Hi, welcome to my portfolio! I’m Suriyanarayanan R, a 2026 Electronics and Communication Engineering graduate from Kings College of Engineering. I graduated with 80.6% under Anna University. I’m passionate about Java, web development, embedded systems, and IoT. Explore my projects and verified achievements, and feel free to connect with me. Thanks for visiting!";
+  "Hello, and welcome to my portfolio. I am Suriyanarayanan R, an Electronics and Communication Engineering graduate from Kings College of Engineering. I am passionate about embedded systems, the Internet of Things, hardware and software integration, and software development. I enjoy learning new technologies and building practical engineering projects. Thank you for visiting my portfolio.";

@@ -7,16 +7,19 @@ import {
   Linkedin, 
   Mail, 
   MapPin, 
-  Cpu, 
   Check, 
   FileText, 
   FolderGit2, 
   Phone,
-  Sparkles,
-  ExternalLink,
-  GraduationCap
+  Play,
+  Pause,
+  Square,
+  Volume2,
+  VolumeX,
+  FileCheck
 } from 'lucide-react';
 import { PERSONAL_INFO } from '../data/portfolioData.ts';
+import { useVoiceIntroduction } from '../hooks/useVoiceIntroduction.ts';
 
 interface HeroProps {
   onOpenResume: () => void;
@@ -24,6 +27,11 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
+  const [showTranscript, setShowTranscript] = useState(false);
+
+  // Natural male voice introduction engine (browser speech synthesis, photo stays 100% static)
+  const voice = useVoiceIntroduction();
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(PERSONAL_INFO.email);
@@ -31,15 +39,21 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
     setTimeout(() => setCopiedEmail(false), 2000);
   };
 
+  const handleCopyPhone = () => {
+    navigator.clipboard.writeText(PERSONAL_INFO.phone);
+    setCopiedPhone(true);
+    setTimeout(() => setCopiedPhone(false), 2000);
+  };
+
   return (
     <section id="hero" className="relative min-h-[92vh] pt-32 pb-20 flex flex-col justify-center overflow-hidden bg-white">
-      {/* Subtle luxury ambient background glows in soft royal blue and sky tint */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-blue-100/40 blur-[130px] pointer-events-none rounded-full" />
-      <div className="absolute top-1/3 -right-20 w-[450px] h-[450px] bg-indigo-100/40 blur-[120px] pointer-events-none rounded-full" />
-      <div className="absolute bottom-10 -left-20 w-[450px] h-[450px] bg-sky-100/50 blur-[120px] pointer-events-none rounded-full" />
+      {/* Subtle radiant ambient background glows on pure white */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-blue-50/70 blur-[130px] pointer-events-none rounded-full" />
+      <div className="absolute top-1/3 -right-20 w-[450px] h-[450px] bg-indigo-50/70 blur-[120px] pointer-events-none rounded-full" />
+      <div className="absolute bottom-10 -left-20 w-[450px] h-[450px] bg-sky-50/80 blur-[120px] pointer-events-none rounded-full" />
 
       {/* Gentle architectural grid pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-50 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 my-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
@@ -52,7 +66,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
             className="lg:col-span-7 flex flex-col space-y-6"
           >
             {/* Live Academic Standing Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 text-xs font-mono text-blue-700 w-fit shadow-xs">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-mono text-blue-700 w-fit shadow-xs">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
@@ -82,11 +96,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
             {/* Core Technical Highlights Strip */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
               {[
-                "Java Full Stack",
-                "ESP32 & Microcontrollers",
-                "Sensor Automation",
-                "Patent-Applied Inventor",
-                "Workshop Resource Person"
+                "Java",
+                "HTML & CSS",
+                "Bootstrap",
+                "Embedded Systems",
+                "IoT Architecture",
+                "Hardware–Software Integration",
+                "Testing & Troubleshooting"
               ].map((highlight) => (
                 <span
                   key={highlight}
@@ -97,7 +113,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
               ))}
             </div>
 
-            {/* 4 Polished Working Action Buttons (Exact Requirement) */}
+            {/* Polished Working Action Buttons */}
             <div className="pt-3 flex flex-wrap items-center gap-3.5">
               {/* 1. View My Projects */}
               <a
@@ -168,6 +184,15 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
                 <span>{copiedEmail ? 'Copied to Clipboard!' : PERSONAL_INFO.email}</span>
               </button>
 
+              <button
+                onClick={handleCopyPhone}
+                className="inline-flex items-center gap-1.5 hover:text-blue-600 transition-colors cursor-pointer"
+                title="Click to copy phone number"
+              >
+                {copiedPhone ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Phone className="w-3.5 h-3.5 text-slate-600" />}
+                <span>{copiedPhone ? 'Copied!' : PERSONAL_INFO.phone}</span>
+              </button>
+
               <span className="inline-flex items-center gap-1.5 text-slate-600">
                 <MapPin className="w-3.5 h-3.5 text-blue-600" />
                 <span>Mannargudi, Tamil Nadu</span>
@@ -176,53 +201,134 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
 
           </motion.div>
 
-          {/* Right Column: STATIC Formal Profile Photograph Showcase */}
+          {/* Right Column: MEET ME — STATIC Photo with Spoken Voice Only (NO photo movement, NO lip animation) */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.94 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-5 flex flex-col items-center justify-center relative"
           >
             {/* Elegant Background Glow and Ring for Portrait */}
-            <div className="relative w-full max-w-[340px] sm:max-w-[390px]">
+            <div className="relative w-full max-w-[360px] sm:max-w-[400px]">
               
               {/* Outer decorative ambient blur ring */}
-              <div className="absolute -inset-4 rounded-[36px] bg-gradient-to-tr from-blue-500/15 via-indigo-500/10 to-sky-400/15 blur-2xl pointer-events-none" />
+              <div className="absolute -inset-4 rounded-[36px] bg-gradient-to-tr from-blue-500/10 via-indigo-500/10 to-sky-400/10 blur-2xl pointer-events-none" />
 
               {/* Main Portrait Card Layout */}
-              <div className="relative rounded-3xl bg-white p-3.5 sm:p-4 border border-slate-200/90 shadow-[0_20px_50px_rgba(37,99,235,0.08)]">
+              <div className="relative rounded-3xl bg-white p-4 sm:p-5 border border-slate-200 shadow-[0_20px_50px_rgba(37,99,235,0.08)]">
                 
                 {/* Header status bar inside portrait card */}
-                <div className="flex items-center justify-between px-2.5 pb-3 mb-3 border-b border-slate-100">
+                <div className="flex items-center justify-between px-2 pb-3 mb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                    <span className="text-xs font-mono font-semibold text-slate-700">Verified Engineering Profile</span>
+                    <span className="text-xs font-mono font-semibold text-slate-700">Meet Me · Verified Profile</span>
                   </div>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-bold border border-blue-200">
                     B.E. ECE 2026
                   </span>
                 </div>
 
-                {/* STATIC Official Formal Profile Photo */}
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner group">
+                {/* 100% COMPLETELY STATIC Formal Profile Photo (NO lip movement, NO head movement, NO animation) */}
+                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner">
                   <img
                     src="/profile.jpg"
-                    alt="Suriyanarayanan R — Electronics and Communication Engineer"
-                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                    alt="Suriyanarayanan R — Electronics and Communication Engineering Graduate"
+                    className="w-full h-full object-cover object-top pointer-events-none select-none"
                   />
 
                   {/* Soft Vignette / Gradient Overlay at bottom */}
-                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent pointer-events-none" />
+                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent pointer-events-none" />
 
-                  {/* Name and Designation Overlay at bottom of photo */}
-                  <div className="absolute inset-x-0 bottom-0 p-4 text-white pointer-events-none">
-                    <div className="font-heading font-bold text-lg sm:text-xl drop-shadow-sm">
+                  {/* Name and Degree Overlay at bottom of photo */}
+                  <div className="absolute inset-x-0 bottom-0 p-3.5 text-white pointer-events-none">
+                    <div className="font-heading font-bold text-base sm:text-lg drop-shadow-sm">
                       Suriyanarayanan R
                     </div>
                     <div className="text-xs text-sky-200 font-mono drop-shadow-xs">
                       Anna University Result: 80.6%
                     </div>
                   </div>
+                </div>
+
+                {/* AUDIO SPOKEN VOICE CONTROL (Requirement C: Visitor presses button to hear natural male English voice) */}
+                <div className="mt-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className={`p-1.5 rounded-lg ${voice.isPlaying ? 'bg-blue-600 text-white animate-pulse' : 'bg-slate-200 text-slate-700'}`}>
+                        <Volume2 className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-slate-900 font-heading">
+                          Spoken Voice Introduction
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-500">
+                          {voice.voiceName ? `Voice: ${voice.voiceName}` : 'Browser Speech Synthesis (Male Voice)'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {voice.isPlaying && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
+                        <span>Speaking</span>
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Control Buttons Strip */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={voice.togglePlay}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-all shadow-sm cursor-pointer"
+                      title={voice.isPlaying ? (voice.isPaused ? 'Resume Voice' : 'Pause Voice') : 'Listen to My Introduction'}
+                    >
+                      {voice.isPlaying && !voice.isPaused ? (
+                        <>
+                          <Pause className="w-4 h-4 fill-current" />
+                          <span>Pause Introduction</span>
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-4 h-4 fill-current" />
+                          <span>{voice.isPaused ? 'Resume Introduction' : 'Listen to My Introduction'}</span>
+                        </>
+                      )}
+                    </button>
+
+                    {voice.isPlaying && (
+                      <button
+                        onClick={voice.stop}
+                        className="p-2.5 rounded-xl bg-slate-200 hover:bg-rose-100 text-slate-700 hover:text-rose-600 transition-colors cursor-pointer"
+                        title="Stop Voice"
+                      >
+                        <Square className="w-4 h-4 fill-current" />
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => setShowTranscript(!showTranscript)}
+                      className={`px-3 py-2.5 rounded-xl border text-xs font-mono transition-colors cursor-pointer ${
+                        showTranscript
+                          ? 'bg-blue-50 border-blue-300 text-blue-700 font-bold'
+                          : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900'
+                      }`}
+                      title="View Spoken Transcript"
+                    >
+                      Transcript
+                    </button>
+                  </div>
+
+                  {/* Expandable Introduction Transcript */}
+                  {showTranscript && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="p-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-600 font-sans leading-relaxed italic"
+                    >
+                      “{voice.speechText}”
+                    </motion.div>
+                  )}
                 </div>
 
                 {/* Footer Badges under Portrait */}

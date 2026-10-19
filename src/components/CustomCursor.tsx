@@ -63,15 +63,15 @@ export const CustomCursor: React.FC = () => {
     <div className="hidden lg:block pointer-events-none fixed inset-0 z-50">
       {/* Center sharp dot */}
       <div
-        className="fixed w-2 h-2 rounded-full bg-cyan-400 -translate-x-1/2 -translate-y-1/2 shadow-[0_0_12px_#06b6d4]"
+        className="fixed w-2 h-2 rounded-full bg-blue-600 -translate-x-1/2 -translate-y-1/2 shadow-xs"
         style={{ left: `${position.x}px`, top: `${position.y}px` }}
       />
       {/* Trailing soft halo ring */}
       <div
         className={`fixed rounded-full -translate-x-1/2 -translate-y-1/2 transition-[width,height,background-color,border-color] duration-200 ${
           isPointer
-            ? 'w-11 h-11 bg-cyan-500/15 border-2 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
-            : 'w-7 h-7 bg-blue-500/5 border border-blue-400/50 shadow-[0_0_10px_rgba(59,130,246,0.2)]'
+            ? 'w-10 h-10 bg-blue-600/10 border-2 border-blue-600 shadow-sm'
+            : 'w-6 h-6 bg-blue-600/5 border border-blue-400/50'
         }`}
         style={{ left: `${trailingPos.x}px`, top: `${trailingPos.y}px` }}
       />

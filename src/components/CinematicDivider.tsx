@@ -11,54 +11,49 @@ interface CinematicDividerProps {
 export const CinematicDivider: React.FC<CinematicDividerProps> = ({
   sectionNumber,
   nextSectionTitle,
-  gradientFrom = 'from-[#030712]',
-  gradientTo = 'to-[#02050c]',
 }) => {
   return (
-    <div className={`relative w-full overflow-hidden bg-gradient-to-b ${gradientFrom} ${gradientTo} py-10 pointer-events-none select-none`}>
-      {/* Ambient glowing horizontal laser line */}
+    <div className="relative w-full overflow-hidden bg-white py-8 pointer-events-none select-none">
+      {/* Subtle glowing horizontal transition line */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="relative flex items-center justify-between">
           
-          {/* Left glowing energy beam */}
+          {/* Left gradient line */}
           <motion.div
             initial={{ scaleX: 0, opacity: 0 }}
             whileInView={{ scaleX: 1, opacity: 1 }}
             viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="flex-1 h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 to-cyan-400 origin-left"
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1 h-[1px] bg-gradient-to-r from-transparent via-blue-200 to-blue-400 origin-left"
           />
 
-          {/* Central Cyber HUD Marker */}
+          {/* Central Section Marker */}
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mx-4 flex items-center gap-3 px-3 py-1 rounded-full bg-[#070e1c]/90 border border-blue-500/30 backdrop-blur-md shadow-[0_0_20px_rgba(59,130,246,0.18)]"
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="mx-4 flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-50 border border-slate-200 shadow-xs"
           >
-            <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#06b6d4]" />
-            <span className="text-[10px] font-mono tracking-widest text-cyan-400 uppercase">
-              CHAPTER {sectionNumber}
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+            <span className="text-[10px] font-mono tracking-widest text-blue-700 font-bold uppercase">
+              SECTION {sectionNumber}
             </span>
-            <span className="text-[10px] font-mono text-slate-500">⟶</span>
-            <span className="text-[10px] font-mono tracking-wider text-slate-300 uppercase">
+            <span className="text-[10px] font-mono text-slate-400">·</span>
+            <span className="text-[10px] font-mono tracking-wider text-slate-700 uppercase font-medium">
               {nextSectionTitle}
             </span>
           </motion.div>
 
-          {/* Right glowing energy beam */}
+          {/* Right gradient line */}
           <motion.div
             initial={{ scaleX: 0, opacity: 0 }}
             whileInView={{ scaleX: 1, opacity: 1 }}
             viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="flex-1 h-[1px] bg-gradient-to-r from-cyan-400 via-blue-500/40 to-transparent origin-right"
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1 h-[1px] bg-gradient-to-r from-blue-400 via-blue-200 to-transparent origin-right"
           />
         </div>
-
-        {/* Ambient center light bloom */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-10 bg-cyan-500/10 blur-2xl" />
       </div>
     </div>
   );
