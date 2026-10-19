@@ -1,294 +1,318 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Camera, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 
 interface AvatarDisplayProps {
   size?: 'sm' | 'md' | 'lg' | 'hero' | 'avatar-modal';
   isSpeaking?: boolean;
+  avatarState?: 'idle' | 'listening' | 'thinking' | 'speaking';
   className?: string;
-  showUploadTrigger?: boolean;
 }
 
 export const AvatarDisplay: React.FC<AvatarDisplayProps> = ({
   size = 'hero',
   isSpeaking = false,
+  avatarState = 'idle',
   className = '',
-  showUploadTrigger = false,
 }) => {
-  const [customPhoto, setCustomPhoto] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [photoSrc, setPhotoSrc] = useState<string | null>(null);
+  const [mouthOpen, setMouthOpen] = useState(false);
 
+  // Load photo from local assets or session storage without any upload controls
   useEffect(() => {
+    // 1. Check if profile photo exists in public/assets/profile/
+    const candidatePaths = [
+      '/assets/profile/profile.jpg',
+      '/assets/profile/avatar.png',
+      '/profile.jpg'
+    ];
+
+    let found = false;
+    for (const p of candidatePaths) {
+      const img = new Image();
+      img.src = p;
+      img.onload = () => {
+        if (!found) {
+          found = true;
+          setPhotoSrc(p);
+        }
+      };
+    }
+
+    // 2. Check saved browser storage fallback
     try {
       const saved = localStorage.getItem('suriyanarayanan_custom_avatar');
-      if (saved) {
-        setCustomPhoto(saved);
+      if (saved && !found) {
+        setPhotoSrc(saved);
       }
     } catch {
-      // LocalStorage access exception catch
+      // Storage access exception catch
     }
   }, []);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        if (result) {
-          setCustomPhoto(result);
-          try {
-            localStorage.setItem('suriyanarayanan_custom_avatar', result);
-          } catch {
-            // storage quota fallback
-          }
-        }
-      };
-      reader.readAsDataURL(file);
+  // Subtle mouth movement cadence during active speech
+  useEffect(() => {
+    if (!isSpeaking) {
+      setMouthOpen(false);
+      return;
     }
-  };
 
-  const resetToDefault = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    try {
-      localStorage.removeItem('suriyanarayanan_custom_avatar');
-    } catch {
-      // ignore
-    }
-    setCustomPhoto(null);
-  };
+    const interval = setInterval(() => {
+      setMouthOpen(prev => !prev);
+    }, 180);
 
-  // Dimensional styles tailored to realistic portrait aspect ratio (approx 3:4 / 4:5)
+    return () => clearInterval(interval);
+  }, [isSpeaking]);
+
   const sizeClasses = {
     sm: 'w-10 h-10',
     md: 'w-16 h-16',
     lg: 'w-28 h-28',
-    hero: 'w-[280px] h-[350px] sm:w-[320px] sm:h-[400px] md:w-[340px] md:h-[425px]',
-    'avatar-modal': 'w-56 h-64 md:w-64 md:h-72',
+    hero: 'w-[280px] h-[360px] sm:w-[320px] sm:h-[410px] md:w-[350px] md:h-[440px]',
+    'avatar-modal': 'w-60 h-72 md:w-72 md:h-84',
   }[size];
 
+  const currentState = isSpeaking ? 'speaking' : avatarState;
+
   return (
-    <div className={`relative group ${className}`}>
-      {/* Outer audio pulse wave when speaking */}
-      {isSpeaking && (
-        <>
-          <div className="absolute -inset-4 rounded-3xl bg-emerald-500/20 blur-xl animate-pulse" />
-          <div className="absolute -inset-1 rounded-2xl border-2 border-emerald-400 animate-ping opacity-60 pointer-events-none" />
-        </>
+    <div className={`relative group select-none ${className}`}>
+      {/* Dynamic Multi-Color Ambient Backlight */}
+      <div 
+        className={`absolute -inset-4 sm:-inset-6 rounded-[36px] blur-2xl transition-all duration-700 pointer-events-none ${
+          currentState === 'speaking'
+            ? 'bg-gradient-to-r from-blue-600/35 via-cyan-500/40 to-violet-600/35 opacity-100 scale-105'
+            : currentState === 'listening'
+            ? 'bg-gradient-to-r from-emerald-500/30 via-cyan-500/30 to-blue-500/30 opacity-80'
+            : currentState === 'thinking'
+            ? 'bg-gradient-to-r from-violet-600/35 via-amber-500/25 to-blue-600/30 opacity-90'
+            : 'bg-blue-600/15 opacity-60'
+        }`}
+      />
+
+      {/* Cyber Rotating Halo for Speaking/Listening */}
+      {currentState === 'speaking' && (
+        <div className="absolute -inset-2.5 rounded-[32px] border-2 border-cyan-400/80 shadow-[0_0_30px_rgba(6,182,212,0.6)] animate-pulse pointer-events-none z-10" />
+      )}
+      {currentState === 'listening' && (
+        <div className="absolute -inset-2.5 rounded-[32px] border-2 border-emerald-400/80 shadow-[0_0_30px_rgba(16,185,129,0.5)] animate-pulse pointer-events-none z-10" />
       )}
 
-      {/* Futuristic Frame Container */}
+      {/* Main Avatar Container with Breathing Animation */}
       <div
-        className={`relative overflow-hidden rounded-2xl bg-gradient-to-b from-slate-900 via-[#0a1118] to-[#040609] border border-emerald-500/35 shadow-[0_0_40px_rgba(16,185,129,0.18)] ${sizeClasses} flex items-center justify-center transition-all duration-300 group-hover:border-emerald-400/60`}
+        className={`relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#0c162c] via-[#070e1c] to-[#03060d] border ${
+          currentState === 'speaking' 
+            ? 'border-cyan-400/70 shadow-[0_0_50px_rgba(6,182,212,0.3)]' 
+            : currentState === 'listening'
+            ? 'border-emerald-400/70 shadow-[0_0_40px_rgba(16,185,129,0.25)]'
+            : 'border-blue-500/30 shadow-[0_0_40px_rgba(37,99,235,0.2)]'
+        } ${sizeClasses} flex items-center justify-center transition-all duration-500`}
+        style={{
+          animation: isSpeaking ? 'breathing 2.4s ease-in-out infinite' : 'breathing 4s ease-in-out infinite'
+        }}
       >
-        {customPhoto ? (
-          <div className="w-full h-full flex items-center justify-center bg-[#05080c] overflow-hidden">
+        {photoSrc ? (
+          /* Actual Uploaded Portrait Image */
+          <div className="w-full h-full relative flex items-center justify-center bg-[#05080c] overflow-hidden">
             <img
-              src={customPhoto}
+              src={photoSrc}
               alt="Suriyanarayanan R"
-              className="w-full h-full object-contain object-top transition-transform duration-300 group-hover:scale-[1.01]"
+              className="w-full h-full object-cover object-top transition-transform duration-500"
+              style={{
+                transform: isSpeaking ? 'scale(1.02)' : 'scale(1.0)',
+              }}
               referrerPolicy="no-referrer"
-              style={{ maxHeight: '100%', maxWidth: '100%' }}
             />
+            {/* Soft Ambient Cinematic Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#03060d] via-transparent to-transparent opacity-60 pointer-events-none" />
           </div>
         ) : (
-          /* High-Fidelity Custom Vector Representation of Suriyanarayanan R (in his formal suit, cream shirt, tie, lapel pin & mustache) */
-          <div className="w-full h-full relative flex items-center justify-center bg-gradient-to-b from-[#131d27] via-[#0d151e] to-[#05080c] select-none">
-            {/* Ambient emerald backlight */}
-            <div className="absolute top-1/4 w-48 h-48 rounded-full bg-emerald-500/15 blur-2xl" />
-            
-            {/* High-detail SVG Portrait of Suriyanarayanan R */}
+          /* High-Fidelity Custom Vector Representation of Suriyanarayanan R (Formal Suit, Cream Shirt, Tie, Lapel Pin & Mustache) */
+          <div className="w-full h-full relative flex items-center justify-center bg-gradient-to-b from-[#0e192f] via-[#08101e] to-[#03050c]">
+            {/* Background cyan/violet aura */}
+            <div className="absolute top-1/4 w-48 h-48 rounded-full bg-cyan-500/15 blur-2xl pointer-events-none" />
+            <div className="absolute bottom-1/4 w-48 h-48 rounded-full bg-violet-500/15 blur-2xl pointer-events-none" />
+
             <svg
               viewBox="0 0 320 380"
               className="w-full h-full object-cover transform translate-y-2 scale-105"
               xmlns="http://www.w3.org/2000/svg"
             >
               <defs>
-                {/* Hair Gradient */}
-                <linearGradient id="hairGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#141416" />
-                  <stop offset="100%" stopColor="#0a0a0c" />
+                <linearGradient id="avatarHairGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#121316" />
+                  <stop offset="100%" stopColor="#08080a" />
                 </linearGradient>
 
-                {/* Skin Tone Gradient */}
-                <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#d89f78" />
-                  <stop offset="60%" stopColor="#c88b63" />
-                  <stop offset="100%" stopColor="#b4764e" />
+                <linearGradient id="avatarSkinGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#db9f77" />
+                  <stop offset="60%" stopColor="#c58a62" />
+                  <stop offset="100%" stopColor="#b1754e" />
                 </linearGradient>
 
-                {/* Dark Suit Gradient */}
-                <linearGradient id="suitGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1c2027" />
-                  <stop offset="40%" stopColor="#12161c" />
-                  <stop offset="100%" stopColor="#080a0e" />
+                <linearGradient id="avatarSuitGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#1d263b" />
+                  <stop offset="40%" stopColor="#121a2a" />
+                  <stop offset="100%" stopColor="#070b13" />
                 </linearGradient>
 
-                {/* Cream Shirt Gradient */}
-                <linearGradient id="shirtGrad" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="avatarShirtGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#fffaf0" />
-                  <stop offset="100%" stopColor="#f3ebd7" />
+                  <stop offset="100%" stopColor="#f2e9d2" />
                 </linearGradient>
 
-                {/* Tie Gradient */}
-                <linearGradient id="tieGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1c1c20" />
-                  <stop offset="100%" stopColor="#0d0d10" />
+                <linearGradient id="avatarTieGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#1b1c22" />
+                  <stop offset="100%" stopColor="#0b0b0f" />
                 </linearGradient>
               </defs>
 
-              {/* Background ambient lighting */}
-              <circle cx="160" cy="140" r="110" fill="#10b981" opacity="0.08" />
-
-              {/* Suit Shoulders & Jacket */}
+              {/* Suit Shoulders & Torso */}
               <path
-                d="M30 380 L60 270 L110 235 L160 260 L210 235 L260 270 L290 380 Z"
-                fill="url(#suitGrad)"
-                stroke="#2a333f"
-                strokeWidth="1.5"
+                d="M 50 380 L 70 290 Q 95 240 160 235 Q 225 240 250 290 L 270 380 Z"
+                fill="url(#avatarSuitGrad)"
               />
-              
+
+              {/* Cream Shirt Collar & Front */}
+              <polygon
+                points="128,245 160,310 192,245 180,235 140,235"
+                fill="url(#avatarShirtGrad)"
+              />
+
               {/* Suit Lapels */}
-              {/* Left Lapel */}
               <path
-                d="M110 235 L85 300 L125 380 L145 380 L125 270 Z"
-                fill="#161b22"
-                stroke="#334155"
-                strokeWidth="1"
+                d="M 95 248 L 138 340 L 160 380 L 115 380 Z"
+                fill="#161f30"
               />
-              {/* Right Lapel */}
               <path
-                d="M210 235 L235 300 L195 380 L175 380 L195 270 Z"
-                fill="#161b22"
-                stroke="#334155"
-                strokeWidth="1"
+                d="M 225 248 L 182 340 L 160 380 L 205 380 Z"
+                fill="#101826"
               />
 
-              {/* Lapel Pin on Left Chest (Right side in SVG) */}
-              <circle cx="230" cy="285" r="5" fill="#1e293b" stroke="#94a3b8" strokeWidth="1" />
-              <polygon points="230,282 233,287 227,287" fill="#10b981" />
+              {/* Necktie */}
+              <polygon
+                points="154,260 166,260 170,360 160,378 150,360"
+                fill="url(#avatarTieGrad)"
+              />
+              <polygon
+                points="152,254 168,254 165,268 155,268"
+                fill="#252730"
+              />
 
-              {/* Cream Shirt Collar */}
-              <polygon points="120,230 160,270 145,225" fill="url(#shirtGrad)" stroke="#e2d8c3" strokeWidth="0.8" />
-              <polygon points="200,230 160,270 175,225" fill="url(#shirtGrad)" stroke="#e2d8c3" strokeWidth="0.8" />
-              <polygon points="140,225 160,250 180,225" fill="#f5eee0" />
-
-              {/* Black Tie */}
-              {/* Knot */}
-              <polygon points="152,246 168,246 165,264 155,264" fill="#111317" stroke="#333" strokeWidth="0.5" />
-              {/* Tie Body */}
-              <polygon points="154,264 166,264 172,360 160,380 148,360" fill="url(#tieGrad)" stroke="#222" strokeWidth="0.5" />
-              {/* Tie Subtle Sheen */}
-              <path d="M158 266 L164 266 L167 360 L161 370" fill="none" stroke="#38404a" strokeWidth="0.8" opacity="0.4" />
+              {/* Gold Lapel Pin */}
+              <circle cx="118" cy="275" r="4.5" fill="#f59e0b" />
+              <circle cx="118" cy="275" r="2.5" fill="#fbbf24" />
 
               {/* Neck */}
-              <path d="M135 185 L135 240 L185 240 L185 185 Z" fill="#b87a52" />
-              <path d="M140 215 L160 235 L180 215" fill="#a46843" opacity="0.6" />
-
-              {/* Head Base / Face */}
               <path
-                d="M105 130 C105 70, 215 70, 215 130 C215 195, 190 225, 160 225 C130 225, 105 195, 105 130 Z"
-                fill="url(#skinGrad)"
+                d="M 136 210 L 136 248 Q 160 258 184 248 L 184 210 Z"
+                fill="url(#avatarSkinGrad)"
+              />
+              <path
+                d="M 136 210 Q 160 230 184 210 Z"
+                fill="#9e623c"
+                opacity="0.35"
+              />
+
+              {/* Head / Face */}
+              <path
+                d="M 112 135 C 112 85 208 85 208 135 C 208 178 195 220 160 222 C 125 220 112 178 112 135 Z"
+                fill="url(#avatarSkinGrad)"
               />
 
               {/* Ears */}
-              <ellipse cx="102" cy="140" rx="7" ry="14" fill="#c3835c" />
-              <ellipse cx="218" cy="140" rx="7" ry="14" fill="#c3835c" />
+              <ellipse cx="111" cy="148" rx="6.5" ry="12" fill="#c58a62" />
+              <ellipse cx="209" cy="148" rx="6.5" ry="12" fill="#b97e56" />
 
-              {/* Neat Black Hair */}
+              {/* Hair */}
               <path
-                d="M102 125 C102 60, 140 45, 160 45 C180 45, 218 60, 218 125 C215 95, 195 75, 160 75 C125 75, 105 95, 102 125 Z"
-                fill="url(#hairGrad)"
+                d="M 106 130 C 104 88 130 55 160 52 C 190 55 216 88 214 130 C 210 102 195 72 160 72 C 125 72 110 102 106 130 Z"
+                fill="url(#avatarHairGrad)"
+              />
+              {/* Hair Volume Side */}
+              <path
+                d="M 106 130 C 104 110 112 90 120 85 C 112 95 109 110 110 135 Z"
+                fill="#08080a"
               />
               <path
-                d="M104 110 C120 70, 160 60, 216 75 C190 68, 130 70, 104 110 Z"
-                fill="#24282f"
-                opacity="0.5"
+                d="M 214 130 C 216 110 208 90 200 85 C 208 95 211 110 210 135 Z"
+                fill="#08080a"
               />
 
               {/* Eyebrows */}
-              <path d="M120 120 Q133 115 145 120" stroke="#1c1917" strokeWidth="3.5" strokeLinecap="round" fill="none" />
-              <path d="M175 120 Q187 115 200 120" stroke="#1c1917" strokeWidth="3.5" strokeLinecap="round" fill="none" />
-
-              {/* Eyes */}
-              {/* Left Eye */}
-              <ellipse cx="134" cy="130" rx="7" ry="4.5" fill="#ffffff" />
-              <circle cx="134" cy="130" r="3.2" fill="#2d1b10" />
-              <circle cx="134" cy="130" r="1.5" fill="#09090b" />
-              <circle cx="135.5" cy="128.5" r="0.9" fill="#ffffff" />
-
-              {/* Right Eye */}
-              <ellipse cx="186" cy="130" rx="7" ry="4.5" fill="#ffffff" />
-              <circle cx="186" cy="130" r="3.2" fill="#2d1b10" />
-              <circle cx="186" cy="130" r="1.5" fill="#09090b" />
-              <circle cx="187.5" cy="128.5" r="0.9" fill="#ffffff" />
-
-              {/* Nose */}
-              <path d="M160 125 L160 152 L152 156 L168 156" fill="none" stroke="#9e623c" strokeWidth="2" strokeLinecap="round" />
-
-              {/* Well-Groomed Neat Mustache */}
               <path
-                d="M142 170 Q160 165 178 170 Q168 176 160 174 Q152 176 142 170 Z"
-                fill="#18181b"
+                d="M 126 128 Q 142 124 148 128"
+                stroke="#1c1c20"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                fill="none"
+              />
+              <path
+                d="M 172 128 Q 178 124 194 128"
+                stroke="#1c1c20"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                fill="none"
               />
 
-              {/* Natural Smile Line (kept authentic and static as requested) */}
-              <path d="M151 182 Q160 186 169 182" stroke="#8a4b27" strokeWidth="2" strokeLinecap="round" fill="none" />
+              {/* Eyes */}
+              <ellipse cx="138" cy="140" rx="6" ry="3.5" fill="#ffffff" />
+              <circle cx="138" cy="140" r="2.8" fill="#1b1c20" />
+              <circle cx="137" cy="139" r="1" fill="#ffffff" />
 
-              {/* Subtle forehead detail from real photo */}
-              <line x1="158" y1="96" x2="162" y2="96" stroke="#fef08a" strokeWidth="1.2" opacity="0.8" />
-              <circle cx="160" cy="101" r="1" fill="#dc2626" opacity="0.8" />
+              <ellipse cx="182" cy="140" rx="6" ry="3.5" fill="#ffffff" />
+              <circle cx="182" cy="140" r="2.8" fill="#1b1c20" />
+              <circle cx="181" cy="139" r="1" fill="#ffffff" />
+
+              {/* Nose */}
+              <path
+                d="M 160 136 L 157 165 Q 160 169 164 165"
+                stroke="#a66a44"
+                strokeWidth="2"
+                strokeLinecap="round"
+                fill="none"
+              />
+
+              {/* Authentic Mustache */}
+              <path
+                d="M 144 176 Q 160 171 176 176 Q 168 184 160 180 Q 152 184 144 176 Z"
+                fill="#121316"
+              />
+
+              {/* Lip-Sync Animated Mouth */}
+              {isSpeaking && mouthOpen ? (
+                <path
+                  d="M 151 187 Q 160 196 169 187 Q 160 191 151 187 Z"
+                  fill="#451818"
+                />
+              ) : (
+                <path
+                  d="M 152 187 Q 160 190 168 187"
+                  stroke="#8f4a38"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+              )}
             </svg>
-
-            {/* Futuristic Tech Overlay Corners */}
-            <div className="absolute top-2 left-2 text-[9px] font-mono text-emerald-400/70 tracking-widest">
-              SR//ECE
-            </div>
-            <div className="absolute bottom-2 right-2 text-[9px] font-mono text-emerald-400/70 tracking-widest">
-              VERIFIED
-            </div>
           </div>
         )}
 
-        {/* Scanline & HUD Grid Effect */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.03] to-transparent pointer-events-none" />
-        <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-emerald-400" />
-        <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-emerald-400" />
-        <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-emerald-400" />
-        <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-emerald-400" />
+        {/* Live Audio Reactive Waveform Overlay at Bottom */}
+        {currentState === 'speaking' && (
+          <div className="absolute bottom-4 inset-x-0 flex items-center justify-center gap-1 z-20 pointer-events-none px-6">
+            <div className="h-6 w-1 bg-cyan-400 rounded-full animate-wave-1 shadow-[0_0_8px_#06b6d4]" />
+            <div className="h-8 w-1 bg-blue-400 rounded-full animate-wave-2 shadow-[0_0_8px_#60a5fa]" />
+            <div className="h-4 w-1 bg-violet-400 rounded-full animate-wave-3 shadow-[0_0_8px_#a78bfa]" />
+            <div className="h-9 w-1 bg-cyan-300 rounded-full animate-wave-4 shadow-[0_0_8px_#67e8f9]" />
+            <div className="h-5 w-1 bg-blue-500 rounded-full animate-wave-5 shadow-[0_0_8px_#3b82f6]" />
+            <div className="h-7 w-1 bg-cyan-400 rounded-full animate-wave-2 shadow-[0_0_8px_#06b6d4]" />
+          </div>
+        )}
       </div>
 
-      {/* Hidden file input for photo upload */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        accept="image/*"
-        className="hidden"
-      />
-
-      {/* Upload/Switch Photo action button */}
-      {showUploadTrigger && (
-        <div className="mt-3 flex items-center justify-center gap-2">
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-slate-300 bg-slate-900/90 hover:bg-slate-800 border border-emerald-500/30 hover:border-emerald-400 transition-all cursor-pointer shadow-sm"
-            title="Upload or change with your photo file"
-          >
-            <Camera className="w-3.5 h-3.5 text-emerald-400" />
-            <span>{customPhoto ? 'Change Photo' : 'Upload Original Photo'}</span>
-          </button>
-
-          {customPhoto && (
-            <button
-              onClick={resetToDefault}
-              className="inline-flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-mono text-slate-400 hover:text-slate-200 bg-slate-900/90 border border-slate-700 hover:border-slate-600 transition-all cursor-pointer"
-              title="Reset to default stylized avatar"
-            >
-              <RefreshCw className="w-3 h-3" />
-            </button>
-          )}
-        </div>
-      )}
+      {/* Cyber Corner HUD Tech Markers */}
+      <div className="absolute top-2 left-2 w-2.5 h-2.5 border-t-2 border-l-2 border-cyan-400/60 pointer-events-none" />
+      <div className="absolute top-2 right-2 w-2.5 h-2.5 border-t-2 border-r-2 border-cyan-400/60 pointer-events-none" />
+      <div className="absolute bottom-2 left-2 w-2.5 h-2.5 border-b-2 border-l-2 border-blue-400/60 pointer-events-none" />
+      <div className="absolute bottom-2 right-2 w-2.5 h-2.5 border-b-2 border-r-2 border-blue-400/60 pointer-events-none" />
     </div>
   );
 };

@@ -40,8 +40,8 @@ export const CustomCursor: React.FC = () => {
     };
 
     const loop = () => {
-      currentX += (targetX - currentX) * 0.18;
-      currentY += (targetY - currentY) * 0.18;
+      currentX += (targetX - currentX) * 0.2;
+      currentY += (targetY - currentY) * 0.2;
       setTrailingPos({ x: currentX, y: currentY });
       animId = requestAnimationFrame(loop);
     };
@@ -63,15 +63,15 @@ export const CustomCursor: React.FC = () => {
     <div className="hidden lg:block pointer-events-none fixed inset-0 z-50">
       {/* Center sharp dot */}
       <div
-        className="fixed w-2 h-2 rounded-full bg-emerald-400 -translate-x-1/2 -translate-y-1/2 shadow-[0_0_10px_#10b981]"
+        className="fixed w-2 h-2 rounded-full bg-cyan-400 -translate-x-1/2 -translate-y-1/2 shadow-[0_0_12px_#06b6d4]"
         style={{ left: `${position.x}px`, top: `${position.y}px` }}
       />
       {/* Trailing soft halo ring */}
       <div
-        className={`fixed rounded-full border border-emerald-400/60 -translate-x-1/2 -translate-y-1/2 transition-[width,height,background-color] duration-200 ${
+        className={`fixed rounded-full -translate-x-1/2 -translate-y-1/2 transition-[width,height,background-color,border-color] duration-200 ${
           isPointer
-            ? 'w-10 h-10 bg-emerald-500/15 border-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
-            : 'w-7 h-7 bg-transparent'
+            ? 'w-11 h-11 bg-cyan-500/15 border-2 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
+            : 'w-7 h-7 bg-blue-500/5 border border-blue-400/50 shadow-[0_0_10px_rgba(59,130,246,0.2)]'
         }`}
         style={{ left: `${trailingPos.x}px`, top: `${trailingPos.y}px` }}
       />

@@ -7,8 +7,11 @@ import {
   Pause, 
   Square,
   Sliders,
-  CheckCircle2,
-  Info
+  Sparkles,
+  Mic,
+  MicOff,
+  Send,
+  MessageSquare
 } from 'lucide-react';
 import { AvatarDisplay } from './AvatarDisplay.tsx';
 import { PERSONAL_INFO } from '../data/portfolioData.ts';
@@ -27,24 +30,34 @@ export const TalkingAvatarModal: React.FC<TalkingAvatarModalProps> = ({
   talkingAvatar,
 }) => {
   const [showSettings, setShowSettings] = useState(false);
+  const [inputQuery, setInputQuery] = useState('');
+  const [chatHistory, setChatHistory] = useState<Array<{ sender: 'user' | 'ai'; text: string }>>([
+    {
+      sender: 'ai',
+      text: "Hello! I am Suriyanarayanan R's interactive AI avatar. Ask me anything about my academic score at Anna University, my patent project, embedded and IoT implementations, internships, or contact details."
+    }
+  ]);
 
   const {
     isSpeaking,
     isPaused,
     hasEnded,
-    isSupported,
+    avatarState,
     currentWordIndex,
-    isMaleVoice,
-    voiceStatusMessage,
     words,
     availableVoices,
     selectedVoiceName,
     setVoiceByName,
+    isListening,
+    transcript,
     start,
     pause,
     resume,
     replay,
     stop,
+    askAI,
+    startListening,
+    stopListening
   } = talkingAvatar;
 
   if (!isOpen) return null;
@@ -54,37 +67,57 @@ export const TalkingAvatarModal: React.FC<TalkingAvatarModalProps> = ({
     onClose();
   };
 
+  const handleQuerySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputQuery.trim()) return;
+
+    const userText = inputQuery.trim();
+    setInputQuery('');
+    setChatHistory(prev => [...prev, { sender: 'user', text: userText }]);
+
+    const response = await askAI(userText);
+    setChatHistory(prev => [...prev, { sender: 'ai', text: response }]);
+  };
+
+  const handleQuickQuestion = async (q: string) => {
+    setChatHistory(prev => [...prev, { sender: 'user', text: q }]);
+    const response = await askAI(q);
+    setChatHistory(prev => [...prev, { sender: 'ai', text: response }]);
+  };
+
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-xl animate-fade-in"
       onClick={handleClose}
     >
       <div 
-        className="relative w-full max-w-2xl bg-gradient-to-b from-[#0c1219] via-[#090d13] to-[#05070a] border border-emerald-500/40 rounded-2xl shadow-[0_0_60px_rgba(16,185,129,0.25)] overflow-hidden flex flex-col"
+        className="relative w-full max-w-3xl bg-gradient-to-b from-[#0b162c] via-[#070e1c] to-[#03060c] border border-blue-500/40 rounded-3xl shadow-[0_0_60px_rgba(59,130,246,0.3)] overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Futuristic HUD Header Bar */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-emerald-500/20 bg-emerald-950/20">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-blue-500/20 bg-blue-950/20">
           <div className="flex items-center gap-3">
             <div className="relative flex items-center justify-center">
-              <span className={`w-2.5 h-2.5 rounded-full ${isSpeaking && !isPaused ? 'bg-emerald-400 animate-ping' : isPaused ? 'bg-amber-400' : 'bg-slate-500'} absolute`} />
-              <span className={`w-2.5 h-2.5 rounded-full ${isSpeaking && !isPaused ? 'bg-emerald-400' : isPaused ? 'bg-amber-400' : 'bg-slate-500'} relative`} />
+              <span className={`w-2.5 h-2.5 rounded-full ${isSpeaking ? 'bg-cyan-400 animate-ping' : isListening ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'} absolute`} />
+              <span className={`w-2.5 h-2.5 rounded-full ${isSpeaking ? 'bg-cyan-400' : isListening ? 'bg-emerald-400' : 'bg-slate-500'} relative`} />
             </div>
             <div>
               <h3 className="text-base font-semibold text-white tracking-wide flex items-center gap-2">
-                <span>Interactive Talking Avatar</span>
+                <span>Talk to My AI — Interactive Experience</span>
                 <span className={`text-[10px] uppercase font-mono px-2 py-0.5 rounded border ${
-                  isSpeaking && !isPaused 
-                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' 
-                    : isPaused
+                  avatarState === 'speaking'
+                    ? 'bg-blue-500/20 text-cyan-300 border-cyan-500/40' 
+                    : avatarState === 'listening'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                    : avatarState === 'thinking'
                     ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                     : 'bg-slate-800 text-slate-300 border-slate-700'
                 }`}>
-                  {isSpeaking && !isPaused ? 'Speaking' : isPaused ? 'Paused' : 'Ready'}
+                  {avatarState}
                 </span>
               </h3>
               <p className="text-xs text-slate-400 font-mono">
-                Introducing {PERSONAL_INFO.name}
+                {PERSONAL_INFO.name} · B.E. ECE 2026
               </p>
             </div>
           </div>
@@ -92,117 +125,164 @@ export const TalkingAvatarModal: React.FC<TalkingAvatarModalProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowSettings(!showSettings)}
-              className={`p-2 rounded-lg text-slate-400 hover:text-white transition-colors border ${showSettings ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : 'border-slate-800 hover:border-slate-700'}`}
-              title="Voice Settings & Detection"
+              className={`p-2 rounded-lg text-slate-400 hover:text-white transition-colors border ${showSettings ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400' : 'border-slate-800 hover:border-slate-700'}`}
+              title="Voice Settings"
             >
               <Sliders className="w-4 h-4" />
             </button>
             <button
               onClick={handleClose}
-              className="p-2 rounded-lg text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700 hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-2 rounded-lg text-slate-400 hover:text-white transition-colors border border-slate-800 hover:border-slate-700"
+              title="Close"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Voice Profile & System Status Drawer */}
+        {/* Voice Diagnostics Settings Bar */}
         {showSettings && (
-          <div className="px-6 py-3.5 bg-[#060a0f] border-b border-emerald-500/20 flex flex-col gap-2 text-xs font-mono">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <span className="text-slate-400">Speech Engine Voice:</span>
+          <div className="p-4 bg-black/60 border-b border-blue-500/20 text-xs font-mono space-y-2">
+            <div className="flex items-center justify-between text-slate-300">
+              <span>Speech Voice Output:</span>
               <select
                 value={selectedVoiceName}
                 onChange={(e) => setVoiceByName(e.target.value)}
-                className="bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-slate-200 text-xs focus:border-emerald-400 outline-none"
+                className="bg-slate-900 border border-slate-700 text-xs rounded px-2 py-1 text-slate-200"
               >
-                {availableVoices.map((v) => (
+                {availableVoices.map(v => (
                   <option key={v.name} value={v.name}>
                     {v.name} ({v.lang})
                   </option>
                 ))}
               </select>
             </div>
-
-            <div className="flex items-center gap-2 text-[11px] text-slate-400 pt-1">
-              <Info className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span>{voiceStatusMessage}</span>
-            </div>
           </div>
         )}
 
-        {/* Voice status banner if voice is active or fallback */}
-        {!showSettings && (
-          <div className="px-6 py-2 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between text-[11px] font-mono">
-            <span className="flex items-center gap-2 text-slate-400 truncate">
-              <span className={`w-1.5 h-1.5 rounded-full ${isMaleVoice ? 'bg-emerald-400' : 'bg-amber-400'}`} />
-              <span className="truncate">{voiceStatusMessage || 'Web Speech Synthesis Engine Ready'}</span>
-            </span>
-            <span className="text-emerald-400/80 uppercase tracking-widest text-[10px] shrink-0 ml-2">
-              Natural Male Voice Filter
-            </span>
-          </div>
-        )}
-
-        {/* Modal Main Content */}
-        <div className="p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-8">
-          {/* Avatar Showcase with Animated Glowing Ring & Waveform */}
-          <div className="flex flex-col items-center">
+        {/* Modal Main Body: Avatar on Left, Interactive Chat & Controls on Right */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 p-6 overflow-y-auto">
+          
+          {/* Avatar Portrait Column */}
+          <div className="md:col-span-5 flex flex-col items-center justify-center">
             <div className="relative">
-              {/* Subtle glowing ring around portrait during speech */}
-              {isSpeaking && !isPaused && (
-                <>
-                  <div className="absolute -inset-3 rounded-[32px] border-2 border-emerald-400/80 shadow-[0_0_30px_rgba(52,211,153,0.5)] animate-pulse pointer-events-none" />
-                  <div className="absolute -inset-1 rounded-2xl border border-lime-400/60 pointer-events-none" />
-                </>
-              )}
-
               <AvatarDisplay
                 size="avatar-modal"
                 isSpeaking={isSpeaking && !isPaused}
-                showUploadTrigger={false}
+                avatarState={avatarState}
               />
-
-              {/* Animated audio waveform / equalizer while speech is playing */}
-              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 z-20">
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
                 <AudioWaveformVisualizer 
                   isSpeaking={isSpeaking}
                   isPaused={isPaused}
-                  barCount={12}
+                  barCount={14}
                 />
               </div>
             </div>
 
-            <div className="mt-5 text-center">
-              <span className="text-xs font-mono text-emerald-400/90 tracking-wide uppercase flex items-center justify-center gap-1.5">
-                <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>
-                  {isSpeaking && !isPaused ? 'Speaking Voice Synth' : isPaused ? 'Voice Synth Paused' : 'Ready to Speak'}
-                </span>
-              </span>
+            {/* Playback Controls */}
+            <div className="flex items-center gap-2 mt-4">
+              {isSpeaking && !isPaused ? (
+                <button
+                  onClick={pause}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500 text-black font-semibold text-xs transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                >
+                  <Pause className="w-4 h-4 fill-current" />
+                  <span>Pause</span>
+                </button>
+              ) : isPaused ? (
+                <button
+                  onClick={resume}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500 text-black font-semibold text-xs transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  <span>Resume</span>
+                </button>
+              ) : (
+                <button
+                  onClick={start}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold text-xs transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                >
+                  <Volume2 className="w-4 h-4" />
+                  <span>{hasEnded ? 'Replay Intro' : 'Play Intro'}</span>
+                </button>
+              )}
+
+              <button
+                onClick={replay}
+                className="p-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white"
+                title="Restart"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={stop}
+                className="p-2 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-300 hover:bg-rose-900/60"
+                title="Stop"
+              >
+                <Square className="w-4 h-4 fill-current" />
+              </button>
             </div>
           </div>
 
-          {/* Interactive Synchronized Captions & Playback Controls */}
-          <div className="flex-1 flex flex-col w-full">
-            <div className="text-xs font-mono uppercase text-slate-400 tracking-wider mb-2 flex items-center justify-between">
-              <span>Synchronized Subtitles</span>
-              <span className="text-emerald-400 font-mono">
-                {currentWordIndex >= 0 ? `${currentWordIndex + 1}/${words.length}` : `${words.length} words`}
+          {/* Interactive Chat & Q&A Column */}
+          <div className="md:col-span-7 flex flex-col justify-between space-y-4">
+            
+            {/* Quick Question Chips */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider block font-semibold">
+                Suggested Inquiries:
               </span>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  "What is your academic score?",
+                  "Tell me about your patent project",
+                  "What are your core engineering skills?",
+                  "Where did you intern?",
+                  "How can I contact you?"
+                ].map((q) => (
+                  <button
+                    key={q}
+                    onClick={() => handleQuickQuestion(q)}
+                    className="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-[#0c182e] hover:bg-[#132547] text-slate-300 hover:text-cyan-300 border border-blue-500/30 transition-colors text-left"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Captions Box with Glowing Active Words */}
-            <div className="p-4 rounded-xl bg-slate-950/70 border border-emerald-500/25 min-h-[140px] max-h-[180px] overflow-y-auto leading-relaxed text-slate-300 text-sm">
-              <p>
-                {words.map((word, idx) => {
-                  const isActive = idx === currentWordIndex;
-                  return (
+            {/* Conversation Log */}
+            <div className="p-4 rounded-2xl bg-black/75 border border-blue-500/20 max-h-52 overflow-y-auto space-y-3 font-sans text-xs">
+              {chatHistory.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`p-3 rounded-xl max-w-[85%] leading-relaxed ${
+                      msg.sender === 'user'
+                        ? 'bg-blue-600 text-white rounded-br-sm'
+                        : 'bg-[#0e1a30] text-slate-200 border border-blue-500/30 rounded-bl-sm'
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Live Subtitle Word Highlights during speech */}
+            {isSpeaking && words.length > 0 && (
+              <div className="p-2.5 rounded-xl bg-blue-950/40 border border-blue-500/30 text-xs text-slate-300 max-h-16 overflow-y-auto">
+                <p>
+                  {words.map((word, idx) => (
                     <span
                       key={idx}
-                      className={`inline-block mr-1.5 transition-colors duration-150 ${
-                        isActive
-                          ? 'text-emerald-300 font-semibold text-glow-accent bg-emerald-500/25 px-1 rounded shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+                      className={`inline-block mr-1 transition-colors ${
+                        idx === currentWordIndex
+                          ? 'text-cyan-300 font-bold bg-blue-500/30 px-1 rounded shadow-[0_0_8px_rgba(6,182,212,0.5)]'
                           : idx < currentWordIndex
                           ? 'text-slate-200'
                           : 'text-slate-500'
@@ -210,87 +290,48 @@ export const TalkingAvatarModal: React.FC<TalkingAvatarModalProps> = ({
                     >
                       {word}
                     </span>
-                  );
-                })}
-              </p>
-            </div>
+                  ))}
+                </p>
+              </div>
+            )}
 
-            {/* Audio & Playback Controls (Pause/Resume, Replay, Stop) */}
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800">
-              <div className="flex items-center gap-2">
-                {isSpeaking && !isPaused ? (
-                  <button
-                    onClick={pause}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-xs tracking-wider transition-all cursor-pointer shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-                    title="Pause speech"
-                  >
-                    <Pause className="w-4 h-4 fill-current" />
-                    <span>Pause</span>
-                  </button>
-                ) : isPaused ? (
-                  <button
-                    onClick={resume}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-xs tracking-wider transition-all cursor-pointer shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-                    title="Resume speech"
-                  >
-                    <Play className="w-4 h-4 fill-current" />
-                    <span>Resume</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={start}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-lime-400 hover:from-emerald-400 hover:to-lime-300 text-black font-semibold text-xs tracking-wider transition-all cursor-pointer shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-                    title={hasEnded ? 'Replay speech introduction' : 'Play speech introduction'}
-                  >
-                    <Play className="w-4 h-4 fill-current" />
-                    <span>{hasEnded ? 'Replay Intro' : 'Play Intro'}</span>
-                  </button>
-                )}
+            {/* Ask AI Input Box & Microphone Button */}
+            <form onSubmit={handleQuerySubmit} className="relative flex items-center gap-2">
+              <button
+                type="button"
+                onClick={isListening ? stopListening : startListening}
+                className={`p-2.5 rounded-xl transition-all cursor-pointer ${
+                  isListening
+                    ? 'bg-emerald-500 text-black font-bold animate-pulse'
+                    : 'bg-[#0e1a30] border border-blue-500/40 text-cyan-400 hover:text-white'
+                }`}
+                title={isListening ? 'Stop listening' : 'Speak your question'}
+              >
+                {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              </button>
 
-                {/* Replay Button */}
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={inputQuery}
+                  onChange={(e) => setInputQuery(e.target.value)}
+                  placeholder={isListening ? (transcript || 'Listening to your voice...') : 'Ask anything about Suriyanarayanan R...'}
+                  className="w-full pl-3 pr-10 py-2.5 text-xs rounded-xl bg-black/80 border border-blue-500/40 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-sans"
+                />
                 <button
-                  onClick={replay}
-                  className="p-2 rounded-lg bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white transition-colors cursor-pointer"
-                  title="Replay from start"
+                  type="submit"
+                  disabled={!inputQuery.trim()}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-cyan-400 hover:text-cyan-300 disabled:opacity-30"
                 >
-                  <RotateCcw className="w-4 h-4" />
-                </button>
-
-                {/* Stop Button */}
-                <button
-                  onClick={stop}
-                  disabled={!isSpeaking && !isPaused && !hasEnded}
-                  className={`p-2 rounded-lg border transition-colors cursor-pointer ${
-                    isSpeaking || isPaused || hasEnded
-                      ? 'bg-rose-950/40 border-rose-500/50 text-rose-300 hover:bg-rose-900/50 hover:border-rose-400'
-                      : 'bg-slate-900/50 border-slate-800 text-slate-600 cursor-not-allowed'
-                  }`}
-                  title="Stop speech and reset"
-                >
-                  <Square className="w-4 h-4 fill-current" />
+                  <Send className="w-3.5 h-3.5" />
                 </button>
               </div>
+            </form>
 
-              <div className="text-[11px] font-mono text-slate-500">
-                {!isSupported ? 'Speech synthesis unavailable' : 'Browser SpeechSynthesis API · Free'}
-              </div>
-            </div>
           </div>
+
         </div>
 
-        {/* Footer info note */}
-        <div className="px-6 py-3 bg-[#070b10] border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            <span>Browser-supported speech synthesis — no external paid APIs or tokens required.</span>
-          </div>
-          <button
-            onClick={handleClose}
-            className="text-xs text-emerald-400 hover:text-emerald-300 font-mono hover:underline cursor-pointer"
-          >
-            Close & Explore →
-          </button>
-        </div>
       </div>
     </div>
   );

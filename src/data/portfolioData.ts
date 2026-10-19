@@ -1,7 +1,7 @@
 export interface Project {
   id: string;
   title: string;
-  category: 'embedded' | 'ai' | 'robotics' | 'patent';
+  category: 'embedded' | 'ai' | 'robotics' | 'patent' | 'web';
   type: string;
   isPatentConfidential?: boolean;
   patentNumber?: string;
@@ -9,7 +9,7 @@ export interface Project {
   description?: string;
   tags?: string[];
   features?: string[];
-  interactiveType?: 'smart-home' | 'visitor-counter' | 'salary-predictor' | 'scrolling-display' | 'surveillance-car';
+  interactiveType?: 'smart-home' | 'visitor-counter' | 'salary-predictor' | 'scrolling-display' | 'surveillance-car' | 'web-showcase';
   hasVideoSlot?: boolean;
   videoPath?: string;
   videoFileName?: string;
@@ -80,14 +80,14 @@ export const SKILLS_DATA = {
 export const PROJECTS_DATA: Project[] = [
   {
     // STRICT PATENT CONFIDENTIALITY:
-    // Only the project title is shown.
+    // Only the project title is shown:
+    // "Design and Implementation of a Digital Oorai Display using Embedded System"
     // No description, image, video, technologies, implementation details, source code, circuit diagrams, algorithms, or project links.
     id: "patent-oorai-display",
     title: "Design and Implementation of a Digital Oorai Display using Embedded System",
     category: "patent",
     type: "Patent-Applied Academic Project",
     isPatentConfidential: true,
-    patentNumber: "TN/PIC/20256-26-PA106",
     hasVideoSlot: false,
   },
   {
@@ -176,10 +176,41 @@ export const PROJECTS_DATA: Project[] = [
       "Wireless command reception for omnidirectional maneuverability",
       "Hardware mounting plate configured for wireless video streaming payload"
     ],
-    interactiveType: "surveillance-car",
     hasVideoSlot: true,
     videoPath: "/videos/surveillance-car.mp4",
     videoFileName: "surveillance-car.mp4",
+  },
+  {
+    id: "food-munch-website",
+    title: "Food Munch Website",
+    category: "web",
+    type: "Responsive Web Application",
+    shortSummary: "Developed a responsive food ordering and restaurant showcase platform with interactive menus and sleek UX.",
+    description: "Architected a responsive multi-section web application utilizing HTML5, modern CSS3 animations, and Bootstrap grid systems. Features interactive menu filters, food delivery tracking layout, and cross-device optimization certified by NxtWave CCBP 4.0 Academy.",
+    tags: ["HTML5", "CSS3", "Bootstrap", "Responsive Design", "Flexbox UI"],
+    features: [
+      "Custom responsive grid layouts with mobile-first viewport design",
+      "Interactive dish item categorization with smooth CSS transitions",
+      "Optimized DOM hierarchy for rapid load speed and accessible semantic structure"
+    ],
+    interactiveType: "web-showcase",
+    hasVideoSlot: false,
+  },
+  {
+    id: "college-symposium-website",
+    title: "College Symposium Website",
+    category: "web",
+    type: "Technical Event Portal",
+    shortSummary: "Engineered an official event registration and scheduling portal for inter-college technical symposiums.",
+    description: "Designed and built the digital portal for technical symposium events, featuring dynamic schedule views, paper presentation track guidelines, online registration forms, and countdown timers for participant coordination.",
+    tags: ["Web Architecture", "Event Management", "Responsive UI", "Form Validation"],
+    features: [
+      "Event registration interface with input validation and feedback notices",
+      "Dynamic timeline schedule tracking multiple parallel technical tracks",
+      "Symposium venue navigation and contact transmission console"
+    ],
+    interactiveType: "web-showcase",
+    hasVideoSlot: false,
   }
 ];
 
@@ -488,9 +519,9 @@ export const ACHIEVEMENTS_DATA = [
     description: "Consistently secured 1st place and top podium finishes at premier symposiums including Freq Fest '24 (EGS Pillay Engg College), Acmet '2k25 (MAM School of Engg), and Kings Project Expos."
   },
   {
-    title: "Patent Applied Inventor",
-    subtitle: "Application No: TN/PIC/20256-26-PA106",
-    description: "Authored and filed a patent for an innovative embedded hardware system: 'Design and Implementation of a Digital Oorai Display using Embedded System'."
+    title: "Design and Implementation of a Digital Oorai Display using Embedded System",
+    subtitle: "Patent-Applied Academic Project",
+    description: "Confidential patent-pending intellectual property."
   }
 ];
 
