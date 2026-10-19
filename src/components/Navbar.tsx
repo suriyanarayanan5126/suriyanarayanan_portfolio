@@ -29,11 +29,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenResume, onOpenAvatar }) =>
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks: NavItem[] = [
+    { label: 'Meet Me', href: '#meet-me', id: 'hero' },
     { label: 'About', href: '#about', id: 'about' },
     { label: 'Skills', href: '#skills', id: 'skills' },
     { label: 'Projects', href: '#projects', id: 'projects' },
-    { label: 'Certificates', href: '#certificates', id: 'certificates' },
     { label: 'Training', href: '#training', id: 'training' },
+    { label: 'Certificates', href: '#certificates', id: 'certificates' },
     { label: 'Education', href: '#education', id: 'education' },
     { label: 'Contact', href: '#contact', id: 'contact' },
   ];

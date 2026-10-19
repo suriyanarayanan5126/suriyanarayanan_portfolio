@@ -551,4 +551,4 @@ export const ACHIEVEMENTS_DATA = [
 ];
 
 export const AVATAR_SPEECH_SCRIPT = 
-  "Hello, and welcome to my portfolio. I am Suriyanarayanan R, an Electronics and Communication Engineering graduate from Kings College of Engineering. I am passionate about embedded systems, the Internet of Things, hardware and software integration, and software development. I enjoy learning new technologies and building practical engineering projects. Thank you for visiting my portfolio.";
+  "Hello, welcome to my portfolio. I am Suriyanarayanan R, an Electronics and Communication Engineering graduate from Kings College of Engineering. I am interested in embedded systems, IoT, hardware and software integration, and software development. I enjoy learning new technologies and building practical projects. Thank you for visiting my portfolio.";

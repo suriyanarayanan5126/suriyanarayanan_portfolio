@@ -90,7 +90,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
 
             {/* Exact Requested Introduction */}
             <p className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl font-sans">
-              An enthusiastic engineering graduate with hands-on project experience, technical curiosity, and a passion for building practical technology solutions.
+              An enthusiastic engineering graduate passionate about technology, embedded systems, IoT, and software development. I enjoy learning quickly, solving practical problems, and building useful technology projects.
             </p>
 
             {/* Core Technical Highlights Strip */}
@@ -215,7 +215,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
               <div className="absolute -inset-4 rounded-[36px] bg-gradient-to-tr from-blue-500/10 via-indigo-500/10 to-sky-400/10 blur-2xl pointer-events-none" />
 
               {/* Main Portrait Card Layout */}
-              <div className="relative rounded-3xl bg-white p-4 sm:p-5 border border-slate-200 shadow-[0_20px_50px_rgba(37,99,235,0.08)]">
+              <div id="meet-me" className="relative rounded-3xl bg-white p-4 sm:p-5 border border-slate-200 shadow-[0_20px_50px_rgba(37,99,235,0.08)] scroll-mt-24">
                 
                 {/* Header status bar inside portrait card */}
                 <div className="flex items-center justify-between px-2 pb-3 mb-3 border-b border-slate-100">

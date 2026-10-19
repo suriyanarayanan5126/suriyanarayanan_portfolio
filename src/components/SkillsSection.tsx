@@ -9,74 +9,37 @@ import {
   Radio, 
   Wrench,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Zap,
+  Sliders,
+  Laptop
 } from 'lucide-react';
 
 export const SkillsSection: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<'all' | 'programming' | 'web' | 'hardware' | 'telecom'>('all');
+  const [activeCategory, setActiveCategory] = useState<'all' | 'software' | 'hardware' | 'web'>('all');
+
+  // Exact mandated primary skills
+  const coreCompetencies = [
+    { name: "Java", category: "software", desc: "Object-Oriented Programming (OOP), Backend Logic & Data Structures", icon: <Code className="w-5 h-5 text-blue-600" /> },
+    { name: "HTML", category: "web", desc: "HTML5 Semantic Markup, Accessibility & Modern Web Structure", icon: <Globe className="w-5 h-5 text-indigo-600" /> },
+    { name: "CSS", category: "web", desc: "CSS3 Flexbox, Grid, Animations & Clean Responsive Styling", icon: <Globe className="w-5 h-5 text-sky-600" /> },
+    { name: "Bootstrap", category: "web", desc: "Responsive Framework, Mobile-First Layouts & UI Components", icon: <Layers className="w-5 h-5 text-violet-600" /> },
+    { name: "Embedded Systems", category: "hardware", desc: "ESP32, Microcontrollers, Firmware Programming & Memory Control", icon: <Cpu className="w-5 h-5 text-blue-600" /> },
+    { name: "Internet of Things (IoT)", category: "hardware", desc: "Sensor Interfacing, Relay Actuation, Wireless System Architectures", icon: <Radio className="w-5 h-5 text-sky-600" /> },
+    { name: "Hardware–Software Integration", category: "hardware", desc: "Microcontroller Sensor-to-Display Pipelines & Driver Calibration", icon: <Sliders className="w-5 h-5 text-indigo-600" /> },
+    { name: "Testing and Troubleshooting", category: "hardware", desc: "Hardware Multimeters, Probes, Circuit Debugging & Diagnostics", icon: <Wrench className="w-5 h-5 text-emerald-600" /> },
+  ];
 
   const categories = [
-    { id: 'all', label: 'All Disciplines' },
-    { id: 'programming', label: 'Programming & Java' },
-    { id: 'web', label: 'Web & Frontend' },
-    { id: 'hardware', label: 'Embedded & IoT' },
-    { id: 'telecom', label: 'Telecom & AI' },
+    { id: 'all', label: 'All Core Skills' },
+    { id: 'hardware', label: 'Embedded Systems & IoT' },
+    { id: 'software', label: 'Java & Programming' },
+    { id: 'web', label: 'HTML, CSS & Bootstrap' },
   ];
 
-  const skillCards = [
-    {
-      category: 'programming',
-      title: 'Java & OOP Architecture',
-      skills: ['Java Core', 'Object-Oriented Programming (OOP)', 'Software Architecture', 'Data Structures Logic', 'Exception Handling', 'Backend Logic'],
-      icon: <Code className="w-5 h-5 text-blue-600" />,
-      level: 'Strong Foundation',
-      verification: 'Certified & Academic Projects'
-    },
-    {
-      category: 'web',
-      title: 'Web Technologies & Responsive UI',
-      skills: ['HTML5 Semantic Markup', 'CSS3 Modern Styling', 'Bootstrap Framework', 'Flexbox Layouts', 'Mobile Responsiveness', 'Cross-Browser UI'],
-      icon: <Globe className="w-5 h-5 text-indigo-600" />,
-      level: 'Certified Developer',
-      verification: 'NxtWave CCBP 4.0 Academy Certified'
-    },
-    {
-      category: 'hardware',
-      title: 'Embedded Systems & IoT Hardware',
-      skills: ['ESP32 Microcontrollers', 'Arduino IDE & Toolchain', 'IR Sensor Interfaces', 'Relay Switching Modules', 'Hardware–Software Integration', 'Circuit Troubleshooting'],
-      icon: <Cpu className="w-5 h-5 text-sky-600" />,
-      level: 'Lead Implementer',
-      verification: 'Patent Project & Kings CoE Workshop'
-    },
-    {
-      category: 'telecom',
-      title: 'Telecommunications & Optical Networks',
-      skills: ['Telecom Switch Fundamentals', 'Digital Communication', 'Optical Fibre Cable (OFC)', 'Splicing & Transmission', 'Broadband & FTTH', 'Network Routing'],
-      icon: <Radio className="w-5 h-5 text-blue-600" />,
-      level: 'Industrial Training',
-      verification: 'BSNL Thanjavur Business Area In-Plant'
-    },
-    {
-      category: 'hardware',
-      title: 'Engineering Tools & Testing',
-      skills: ['Visual Studio Code', 'Arduino IDE', 'Hardware Multimeters & Probes', 'Firmware Flashing', 'Testing & Troubleshooting', 'Git / GitHub Version Control'],
-      icon: <Wrench className="w-5 h-5 text-emerald-600" />,
-      level: 'Daily Toolset',
-      verification: 'Academic Lab & Project Expo Execution'
-    },
-    {
-      category: 'telecom',
-      title: 'Artificial Intelligence & Machine Learning',
-      skills: ['Supervised Machine Learning', 'Linear Regression Modeling', 'Salary Prediction Pipelines', 'Feature Preprocessing', 'AI Fundamentals'],
-      icon: <Terminal className="w-5 h-5 text-indigo-600" />,
-      level: 'Credentialed',
-      verification: 'IBM SkillsBuild & Edunet/AICTE Certified'
-    }
-  ];
-
-  const filteredCards = activeCategory === 'all' 
-    ? skillCards 
-    : skillCards.filter(c => c.category === activeCategory);
+  const filteredSkills = activeCategory === 'all'
+    ? coreCompetencies
+    : coreCompetencies.filter(s => s.category === activeCategory);
 
   return (
     <section id="skills" className="relative py-28 bg-white text-slate-900 overflow-hidden scroll-mt-16 border-y border-slate-200">
@@ -97,15 +60,15 @@ export const SkillsSection: React.FC = () => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-mono text-blue-700 shadow-xs">
             <Layers className="w-3.5 h-3.5 text-blue-600" />
-            <span className="font-semibold tracking-wider uppercase">02. TECHNICAL ARSENAL</span>
+            <span className="font-semibold tracking-wider uppercase">02. TECHNICAL SKILLS</span>
           </div>
 
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-heading">
-            Skills & <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600">Proficiencies</span>
+            Technical <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600">Arsenal</span>
           </h2>
 
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl font-sans">
-            Verified technical capabilities certified through accredited academies, industrial training, and practical deployment.
+            Demonstrated engineering expertise in embedded systems, IoT hardware architectures, and modern software technologies.
           </p>
 
           {/* Category Filter Tabs */}
@@ -126,47 +89,40 @@ export const SkillsSection: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Skill Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCards.map((card, idx) => (
+        {/* Primary Mandated Skill Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredSkills.map((skill, idx) => (
             <motion.div
-              key={card.title}
+              key={skill.name}
               initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.15 }}
-              transition={{ duration: 0.5, delay: idx * 0.08 }}
+              transition={{ duration: 0.5, delay: idx * 0.06 }}
               whileHover={{ y: -6 }}
-              className="p-7 rounded-3xl bg-[#fafafc] border border-slate-200 hover:border-blue-400 shadow-[0_4px_25px_rgba(0,0,0,0.03)] hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+              className="p-6 rounded-3xl bg-[#fafafc] border border-slate-200 hover:border-blue-400 shadow-[0_4px_25px_rgba(0,0,0,0.03)] hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-default"
             >
               <div>
-                {/* Header row */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 rounded-2xl bg-white border border-slate-200 shadow-xs group-hover:bg-blue-50 transition-colors">
-                    {card.icon}
+                    {skill.icon}
                   </div>
-                  <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">
-                    {card.level}
+                  <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200 uppercase tracking-wider">
+                    {skill.category}
                   </span>
                 </div>
 
-                <h3 className="font-heading font-bold text-slate-900 text-lg mb-4 group-hover:text-blue-600 transition-colors">
-                  {card.title}
+                <h3 className="font-heading font-bold text-slate-900 text-lg mb-2 group-hover:text-blue-600 transition-colors">
+                  {skill.name}
                 </h3>
 
-                {/* Skills tags list */}
-                <div className="space-y-2 mb-6">
-                  {card.skills.map((skill, sIdx) => (
-                    <div key={sIdx} className="flex items-center gap-2 text-xs text-slate-700 font-sans">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                      <span>{skill}</span>
-                    </div>
-                  ))}
-                </div>
+                <p className="text-slate-600 text-xs leading-relaxed font-sans mb-4">
+                  {skill.desc}
+                </p>
               </div>
 
-              {/* Verification footer */}
-              <div className="pt-4 border-t border-slate-200 text-[11px] font-mono text-slate-500">
-                <span>{card.verification}</span>
+              <div className="pt-3 border-t border-slate-200/80 flex items-center gap-1.5 text-xs text-emerald-600 font-mono font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Verified Core Competency</span>
               </div>
             </motion.div>
           ))}
