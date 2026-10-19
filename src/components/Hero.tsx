@@ -275,46 +275,92 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
                     )}
                   </div>
 
-                  {/* Control Buttons Strip */}
-                  <div className="flex items-center gap-2">
+                  {/* Explicit Voice Controls: Play, Pause, Resume, Stop (Requirement 6) */}
+                  <div className="grid grid-cols-4 gap-1.5 pt-1">
+                    {/* Play Button */}
                     <button
-                      onClick={voice.togglePlay}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-all shadow-sm cursor-pointer"
-                      title={voice.isPlaying ? (voice.isPaused ? 'Resume Voice' : 'Pause Voice') : 'Listen to My Introduction'}
+                      onClick={voice.play}
+                      disabled={voice.isPlaying && !voice.isPaused}
+                      className={`inline-flex items-center justify-center gap-1 py-2 px-2 rounded-xl text-xs font-semibold font-mono transition-all cursor-pointer ${
+                        voice.isPlaying && !voice.isPaused
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : 'bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200'
+                      }`}
+                      title="Play spoken voice introduction"
                     >
-                      {voice.isPlaying && !voice.isPaused ? (
-                        <>
-                          <Pause className="w-4 h-4 fill-current" />
-                          <span>Pause Introduction</span>
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-4 h-4 fill-current" />
-                          <span>{voice.isPaused ? 'Resume Introduction' : 'Listen to My Introduction'}</span>
-                        </>
-                      )}
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span>Play</span>
                     </button>
 
-                    {voice.isPlaying && (
-                      <button
-                        onClick={voice.stop}
-                        className="p-2.5 rounded-xl bg-slate-200 hover:bg-rose-100 text-slate-700 hover:text-rose-600 transition-colors cursor-pointer"
-                        title="Stop Voice"
-                      >
-                        <Square className="w-4 h-4 fill-current" />
-                      </button>
-                    )}
+                    {/* Pause Button */}
+                    <button
+                      onClick={voice.pause}
+                      disabled={!voice.isPlaying || voice.isPaused}
+                      className={`inline-flex items-center justify-center gap-1 py-2 px-2 rounded-xl text-xs font-semibold font-mono transition-all cursor-pointer ${
+                        voice.isPlaying && !voice.isPaused
+                          ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 shadow-xs'
+                          : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60'
+                      }`}
+                      title="Pause spoken voice"
+                    >
+                      <Pause className="w-3.5 h-3.5 fill-current" />
+                      <span>Pause</span>
+                    </button>
+
+                    {/* Resume Button */}
+                    <button
+                      onClick={voice.resume}
+                      disabled={!voice.isPaused}
+                      className={`inline-flex items-center justify-center gap-1 py-2 px-2 rounded-xl text-xs font-semibold font-mono transition-all cursor-pointer ${
+                        voice.isPaused
+                          ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs animate-pulse'
+                          : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60'
+                      }`}
+                      title="Resume paused voice"
+                    >
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span>Resume</span>
+                    </button>
+
+                    {/* Stop Button */}
+                    <button
+                      onClick={voice.stop}
+                      disabled={!voice.isPlaying && !voice.isPaused}
+                      className={`inline-flex items-center justify-center gap-1 py-2 px-2 rounded-xl text-xs font-semibold font-mono transition-all cursor-pointer ${
+                        voice.isPlaying || voice.isPaused
+                          ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 shadow-xs'
+                          : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60'
+                      }`}
+                      title="Stop spoken voice"
+                    >
+                      <Square className="w-3.5 h-3.5 fill-current" />
+                      <span>Stop</span>
+                    </button>
+                  </div>
+
+                  {/* Transcript Toggle and Status Row */}
+                  <div className="flex items-center justify-between pt-1 text-[11px] font-mono">
+                    <span className="text-slate-500">
+                      Status: {voice.isPlaying && !voice.isPaused ? (
+                        <span className="text-blue-700 font-semibold">Speaking...</span>
+                      ) : voice.isPaused ? (
+                        <span className="text-amber-600 font-semibold">Paused</span>
+                      ) : voice.hasEnded ? (
+                        <span className="text-emerald-600 font-semibold">Finished</span>
+                      ) : (
+                        <span className="text-slate-500">Ready</span>
+                      )}
+                    </span>
 
                     <button
                       onClick={() => setShowTranscript(!showTranscript)}
-                      className={`px-3 py-2.5 rounded-xl border text-xs font-mono transition-colors cursor-pointer ${
+                      className={`px-2 py-0.5 rounded text-[11px] font-mono transition-colors cursor-pointer ${
                         showTranscript
-                          ? 'bg-blue-50 border-blue-300 text-blue-700 font-bold'
-                          : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900'
+                          ? 'bg-blue-100 text-blue-800 font-bold'
+                          : 'text-slate-500 hover:text-slate-800 underline'
                       }`}
-                      title="View Spoken Transcript"
                     >
-                      Transcript
+                      {showTranscript ? 'Hide Script' : 'View Script'}
                     </button>
                   </div>
 

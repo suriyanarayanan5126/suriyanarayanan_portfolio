@@ -178,13 +178,26 @@ export const ProjectsSection: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Video Player Caption */}
+                      {/* Video Player Caption with Open Link */}
                       <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs font-mono text-slate-600">
                         <span className="flex items-center gap-1.5">
                           <Play className="w-3.5 h-3.5 text-blue-600" />
-                          <span>Original Uploaded Video</span>
+                          <span>Original MP4 Video</span>
                         </span>
-                        <span className="text-[11px] text-slate-500 font-semibold">Playable MP4</span>
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={`/videos/${encodeURIComponent(project.videoFileName)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-[11px] text-blue-600 hover:text-blue-800 hover:underline font-semibold"
+                            title="Open original MP4 in new tab"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            <span>Open</span>
+                          </a>
+                          <span className="text-slate-300">·</span>
+                          <span className="text-[11px] text-slate-500 font-semibold">Playable</span>
+                        </div>
                       </div>
                     </div>
                   )}

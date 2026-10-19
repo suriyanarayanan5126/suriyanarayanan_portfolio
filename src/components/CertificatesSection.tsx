@@ -13,7 +13,8 @@ import {
   ShieldCheck,
   Calendar,
   Sparkles,
-  FileCheck
+  FileCheck,
+  FileText
 } from 'lucide-react';
 import { CERTIFICATES_DATA, CertificateItem } from '../data/portfolioData.ts';
 import { PdfCertificatePreview } from './PdfCertificatePreview.tsx';
@@ -23,8 +24,9 @@ export const CertificatesSection: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeModalCert, setActiveModalCert] = useState<CertificateItem | null>(null);
   const [modalZoom, setModalZoom] = useState(1);
+  const [modalViewMode, setModalViewMode] = useState<'preview' | 'embedded'>('preview');
 
-  // Active certificates list (Java Full Stack is strictly excluded per user instructions)
+  // Active certificates list (Java Full Stack 9.pdf is strictly excluded per user instructions)
   const activeCertificates = CERTIFICATES_DATA.filter((cert) => !cert.isExcluded);
 
   const filteredCertificates = activeCertificates.filter((cert) => {
@@ -138,6 +140,7 @@ export const CertificatesSection: React.FC = () => {
                 onClick={() => {
                   setActiveModalCert(cert);
                   setModalZoom(1);
+                  setModalViewMode('preview');
                 }}
               >
                 {/* Certificate Visual Preview Canvas Header */}
@@ -202,14 +205,14 @@ export const CertificatesSection: React.FC = () => {
                     <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={(e) => handleOpenPdf(cert, e)}
-                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 border border-slate-200 transition-colors"
-                        title="Open PDF in new tab"
+                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 border border-slate-200 transition-colors cursor-pointer"
+                        title="Open original PDF in new tab"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={(e) => handleDownload(cert, e)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold text-xs border border-blue-200 transition-colors"
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold text-xs border border-blue-200 transition-colors cursor-pointer"
                         title="Download original certificate PDF"
                       >
                         <Download className="w-3.5 h-3.5" />
@@ -229,7 +232,7 @@ export const CertificatesSection: React.FC = () => {
       <AnimatePresence>
         {activeModalCert && (
           <div 
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/80 backdrop-blur-md animate-fade-in"
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/80 backdrop-blur-md animate-fade-in"
             onClick={() => setActiveModalCert(null)}
           >
             <motion.div 
@@ -257,30 +260,54 @@ export const CertificatesSection: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
+                  {/* Mode switcher: Preview vs Embedded PDF */}
+                  <div className="hidden sm:flex items-center bg-slate-200/80 p-0.5 rounded-xl text-xs font-mono">
+                    <button
+                      onClick={() => setModalViewMode('preview')}
+                      className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                        modalViewMode === 'preview'
+                          ? 'bg-white text-slate-900 font-semibold shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Image Preview
+                    </button>
+                    <button
+                      onClick={() => setModalViewMode('embedded')}
+                      className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                        modalViewMode === 'embedded'
+                          ? 'bg-white text-slate-900 font-semibold shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Interactive PDF
+                    </button>
+                  </div>
+
                   <button
                     onClick={() => setModalZoom(prev => Math.min(2.5, prev + 0.25))}
-                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-300 transition-colors shadow-xs"
+                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-300 transition-colors shadow-xs cursor-pointer"
                     title="Zoom In"
                   >
                     <ZoomIn className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setModalZoom(prev => Math.max(0.75, prev - 0.25))}
-                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-300 transition-colors shadow-xs"
+                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-300 transition-colors shadow-xs cursor-pointer"
                     title="Zoom Out"
                   >
                     <ZoomOut className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setModalZoom(1)}
-                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-300 transition-colors shadow-xs"
+                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-300 transition-colors shadow-xs cursor-pointer"
                     title="Reset Zoom"
                   >
                     <RotateCcw className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setActiveModalCert(null)}
-                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-slate-900 transition-colors shadow-xs"
+                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-slate-900 transition-colors shadow-xs cursor-pointer"
                     title="Close"
                   >
                     <X className="w-4 h-4" />
@@ -290,16 +317,30 @@ export const CertificatesSection: React.FC = () => {
 
               {/* Certificate Viewer Area */}
               <div className="flex-1 overflow-auto p-4 sm:p-6 bg-slate-100 flex items-center justify-center min-h-[420px]">
-                <div 
-                  className="transition-transform duration-200 origin-center bg-white shadow-xl rounded-2xl overflow-hidden max-w-full"
-                  style={{ transform: `scale(${modalZoom})` }}
-                >
-                  <PdfCertificatePreview
-                    pdfUrl={activeModalCert.filePath}
-                    title={activeModalCert.title}
-                    className="w-[720px] max-w-full h-[520px]"
-                  />
-                </div>
+                {modalViewMode === 'preview' ? (
+                  <div 
+                    className="transition-transform duration-200 origin-center bg-white shadow-xl rounded-2xl overflow-hidden max-w-full"
+                    style={{ transform: `scale(${modalZoom})` }}
+                  >
+                    <PdfCertificatePreview
+                      pdfUrl={activeModalCert.filePath}
+                      title={activeModalCert.title}
+                      highResolution={true}
+                      className="w-[740px] max-w-full h-[520px]"
+                    />
+                  </div>
+                ) : (
+                  <div 
+                    className="w-full h-[520px] bg-white rounded-2xl overflow-hidden shadow-xl"
+                    style={{ transform: `scale(${modalZoom})` }}
+                  >
+                    <iframe
+                      src={`${activeModalCert.filePath}#toolbar=1&navpanes=0`}
+                      className="w-full h-full border-0"
+                      title={activeModalCert.title}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Footer Controls & Details */}
@@ -311,7 +352,7 @@ export const CertificatesSection: React.FC = () => {
                 <div className="flex items-center gap-3 shrink-0">
                   <button
                     onClick={() => handleOpenPdf(activeModalCert)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-blue-600 text-xs font-semibold border border-slate-200 shadow-xs transition-all"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-blue-600 text-xs font-semibold border border-slate-200 shadow-xs transition-all cursor-pointer"
                   >
                     <ExternalLink className="w-4 h-4" />
                     <span>View in New Tab</span>
@@ -319,7 +360,7 @@ export const CertificatesSection: React.FC = () => {
 
                   <button
                     onClick={() => handleDownload(activeModalCert)}
-                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-md transition-all"
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-md transition-all cursor-pointer"
                   >
                     <Download className="w-4 h-4" />
                     <span>Download Original PDF</span>

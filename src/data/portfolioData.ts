@@ -299,6 +299,51 @@ export const INTERNSHIPS_DATA: Internship[] = [
 
 export const CERTIFICATES_DATA: CertificateItem[] = [
   {
+    id: "cert-kings-project-expo-2026",
+    title: "Kings Project Expo '26 — Digital Oorai Display",
+    issuer: "Kings College of Engineering (Autonomous) & IEEE",
+    category: "award",
+    date: "16.04.2026",
+    achievementLevel: "First / Second Prize Winner · ECE Track",
+    details: "Certificate of Appreciation for project 'Design and Implementation of a Digital Oorai Real Time Display using Embedded System' organized by Centre for Promotion of Research, Kings College of Engineering.",
+    fileName: "kings26.pdf",
+    filePath: "/certificates/kings26.pdf",
+    imagePath: "/certificates/kings26.pdf",
+    uploadedFileName: "kings26.pdf",
+    aliases: ["kings26.pdf", "kings-project-expo-2026.pdf", "kings_expo.pdf"],
+    pageNumber: 1
+  },
+  {
+    id: "cert-freq-fest-24",
+    title: "Freq Fest 24 International Student Symposium — 1st Place",
+    issuer: "E.G.S. Pillay Engineering College, Nagapattinam",
+    category: "award",
+    date: "05.10.2024",
+    achievementLevel: "FIRST Place Winner",
+    details: "Awarded FIRST place in the 'Economic Electronic Garments Design' competition as part of the International Level Technical Symposium Freq Fest 24, organized by SPARKS Student Association, Dept of ECE.",
+    fileName: "2egs.pdf",
+    filePath: "/certificates/2egs.pdf",
+    imagePath: "/certificates/2egs.pdf",
+    uploadedFileName: "2egs.pdf",
+    aliases: ["2egs.pdf", "freq-fest-24.pdf", "freq_fest.pdf"],
+    pageNumber: 2
+  },
+  {
+    id: "cert-acmet-2k25",
+    title: "Acmet '2k25 13th National Level Technical Fest — I Prize",
+    issuer: "M.A.M. School of Engineering, Siruganur, Trichy",
+    category: "award",
+    date: "30.04.2025",
+    achievementLevel: "1st Prize Winner · Innovation Expo",
+    details: "Secured First Prize in Innovation Expo at the 13th National Level Technical Fest Acmet '2k25 for presenting innovative hardware solutions.",
+    fileName: "3mam.pdf",
+    filePath: "/certificates/3mam.pdf",
+    imagePath: "/certificates/3mam.pdf",
+    uploadedFileName: "3mam.pdf",
+    aliases: ["3mam.pdf", "acmet-2k25.pdf", "acmet.pdf"],
+    pageNumber: 3
+  },
+  {
     id: "cert-electrovibez-23",
     title: "Electrovibez '23 National Level Technical Symposium — II Prize",
     issuer: "Kings College of Engineering (Dept of ECE & IEEE)",
@@ -425,8 +470,8 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     date: "17.05.2024",
     details: "Attended MIC AICTE sponsored impact lecture series on 'Role of Innovation in Startup Success and Enforcement of Intellectual Property Rights - Patents and Design'.",
     fileName: "12 (2).pdf",
-    filePath: "/certificates/12 (2).pdf",
-    imagePath: "/certificates/12 (2).pdf",
+    filePath: "/certificates/12%20(2).pdf",
+    imagePath: "/certificates/12%20(2).pdf",
     uploadedFileName: "12 (2).pdf",
     aliases: ["12 (2).pdf", "12.pdf", "ipr-patents-innovation-lecture.pdf"],
     pageNumber: 12
@@ -444,7 +489,7 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     imagePath: "/certificates/13.pdf",
     uploadedFileName: "13.pdf",
     aliases: ["13.pdf", "edunet-aicte-ai-ml-internship.pdf"],
-    pageNumber: 14
+    pageNumber: 13
   },
   {
     id: "cert-bsnl-training",
@@ -459,52 +504,7 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     imagePath: "/certificates/bsnl-telecom-internship.pdf",
     uploadedFileName: "bsnl-telecom-internship.pdf",
     aliases: ["bsnl-telecom-internship.pdf", "bsnl.pdf"],
-    pageNumber: 13
-  },
-  {
-    id: "cert-kings-project-expo-2026",
-    title: "Kings Project Expo '26 — Digital Oorai Display",
-    issuer: "Kings College of Engineering (Autonomous) & IEEE",
-    category: "award",
-    date: "16.04.2026",
-    achievementLevel: "First / Second Prize Winner · ECE Track",
-    details: "Certificate of Appreciation for project 'Design and Implementation of a Digital Oorai Real Time Display using Embedded System' organized by Centre for Promotion of Research, Kings College of Engineering.",
-    fileName: "kings-project-expo-2026.pdf",
-    filePath: "/certificates/kings-project-expo-2026.pdf",
-    imagePath: "/certificates/kings-project-expo-2026.pdf",
-    uploadedFileName: "kings-project-expo-2026.pdf",
-    aliases: ["kings-project-expo-2026.pdf", "kings_expo.pdf"],
-    pageNumber: 1
-  },
-  {
-    id: "cert-freq-fest-24",
-    title: "Freq Fest 24 International Student Symposium — 1st Place",
-    issuer: "E.G.S. Pillay Engineering College, Nagapattinam",
-    category: "award",
-    date: "05.10.2024",
-    achievementLevel: "FIRST Place Winner",
-    details: "Awarded FIRST place in the 'Economic Electronic Garments Design' competition as part of the International Level Technical Symposium Freq Fest 24, organized by SPARKS Student Association, Dept of ECE.",
-    fileName: "freq-fest-24.pdf",
-    filePath: "/certificates/freq-fest-24.pdf",
-    imagePath: "/certificates/freq-fest-24.pdf",
-    uploadedFileName: "freq-fest-24.pdf",
-    aliases: ["freq-fest-24.pdf", "freq_fest.pdf"],
-    pageNumber: 2
-  },
-  {
-    id: "cert-acmet-2k25",
-    title: "Acmet '2k25 13th National Level Technical Fest — I Prize",
-    issuer: "M.A.M. School of Engineering, Siruganur, Trichy",
-    category: "award",
-    date: "30.04.2025",
-    achievementLevel: "1st Prize Winner · Innovation Expo",
-    details: "Secured First Prize in Innovation Expo at the 13th National Level Technical Fest Acmet '2k25 for presenting innovative hardware solutions.",
-    fileName: "acmet-2k25.pdf",
-    filePath: "/certificates/acmet-2k25.pdf",
-    imagePath: "/certificates/acmet-2k25.pdf",
-    uploadedFileName: "acmet-2k25.pdf",
-    aliases: ["acmet-2k25.pdf", "acmet.pdf"],
-    pageNumber: 3
+    pageNumber: 14
   }
 ];
 

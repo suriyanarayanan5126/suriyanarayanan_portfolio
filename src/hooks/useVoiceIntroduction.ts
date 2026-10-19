@@ -131,6 +131,9 @@ export const useVoiceIntroduction = (): VoiceIntroductionState => {
     }
 
     window.speechSynthesis.cancel();
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
 
     const voice = selectedVoiceRef.current || findBestMaleVoice();
     const utterance = new SpeechSynthesisUtterance(AVATAR_SPEECH_SCRIPT);
@@ -187,6 +190,9 @@ export const useVoiceIntroduction = (): VoiceIntroductionState => {
         setIsPlaying(true);
       } else if (!window.speechSynthesis.speaking) {
         play();
+      } else {
+        setIsPaused(false);
+        setIsPlaying(true);
       }
     }
   }, [play]);
