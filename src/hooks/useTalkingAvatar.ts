@@ -374,7 +374,7 @@ export const useTalkingAvatar = (): TalkingAvatarState => {
 
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert('Speech recognition is not supported in this browser. You can type your query in the Talk to My AI prompt.');
+      setVoiceStatusMessage('Speech recognition is not supported in this browser. Please type your query in the prompt.');
       return;
     }
 
