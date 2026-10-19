@@ -5,6 +5,7 @@ interface AvatarDisplayProps {
   isSpeaking?: boolean;
   avatarState?: 'idle' | 'listening' | 'thinking' | 'speaking';
   className?: string;
+  showPresenterBadge?: boolean;
 }
 
 export const AvatarDisplay: React.FC<AvatarDisplayProps> = ({
@@ -12,17 +13,19 @@ export const AvatarDisplay: React.FC<AvatarDisplayProps> = ({
   isSpeaking = false,
   avatarState = 'idle',
   className = '',
+  showPresenterBadge = true,
 }) => {
-  const [photoSrc, setPhotoSrc] = useState<string | null>(null);
-  const [mouthOpen, setMouthOpen] = useState(false);
+  // Use official generated portrait of Suriyanarayanan at laptop
+  const [photoSrc, setPhotoSrc] = useState<string>('/assets/profile/profile.jpg');
+  const [visemeIndex, setVisemeIndex] = useState<number>(0);
+  const [isBlinking, setIsBlinking] = useState<boolean>(false);
 
-  // Load photo from local assets or session storage without any upload controls
+  // Fallback candidate paths
   useEffect(() => {
-    // 1. Check if profile photo exists in public/assets/profile/
     const candidatePaths = [
       '/assets/profile/profile.jpg',
-      '/assets/profile/avatar.png',
-      '/profile.jpg'
+      '/profile.jpg',
+      '/src/assets/images/suriya_laptop_avatar_1792388367075.jpg'
     ];
 
     let found = false;
@@ -36,38 +39,39 @@ export const AvatarDisplay: React.FC<AvatarDisplayProps> = ({
         }
       };
     }
-
-    // 2. Check saved browser storage fallback
-    try {
-      const saved = localStorage.getItem('suriyanarayanan_custom_avatar');
-      if (saved && !found) {
-        setPhotoSrc(saved);
-      }
-    } catch {
-      // Storage access exception catch
-    }
   }, []);
 
-  // Subtle mouth movement cadence during active speech
+  // Synchronized mouth/lip articulation cadence during active speech
   useEffect(() => {
     if (!isSpeaking) {
-      setMouthOpen(false);
+      setVisemeIndex(0);
       return;
     }
 
+    // Cycles through speech mouth visemes (0: closed/rest, 1: slight open, 2: open vowel, 3: round consonant)
     const interval = setInterval(() => {
-      setMouthOpen(prev => !prev);
-    }, 180);
+      setVisemeIndex((prev) => (prev + 1) % 4);
+    }, 145);
 
     return () => clearInterval(interval);
   }, [isSpeaking]);
 
+  // Occasional natural eye blink
+  useEffect(() => {
+    const blinkInterval = setInterval(() => {
+      setIsBlinking(true);
+      setTimeout(() => setIsBlinking(false), 160);
+    }, 4500);
+
+    return () => clearInterval(blinkInterval);
+  }, []);
+
   const sizeClasses = {
-    sm: 'w-10 h-10',
-    md: 'w-16 h-16',
-    lg: 'w-28 h-28',
-    hero: 'w-[280px] h-[360px] sm:w-[320px] sm:h-[410px] md:w-[350px] md:h-[440px]',
-    'avatar-modal': 'w-60 h-72 md:w-72 md:h-84',
+    sm: 'w-12 h-14',
+    md: 'w-20 h-24',
+    lg: 'w-36 h-44',
+    hero: 'w-[300px] h-[390px] sm:w-[340px] sm:h-[440px] md:w-[370px] md:h-[480px]',
+    'avatar-modal': 'w-[280px] h-[360px] md:w-[320px] md:h-[415px]',
   }[size];
 
   const currentState = isSpeaking ? 'speaking' : avatarState;
@@ -78,12 +82,12 @@ export const AvatarDisplay: React.FC<AvatarDisplayProps> = ({
       <div 
         className={`absolute -inset-4 sm:-inset-6 rounded-[36px] blur-2xl transition-all duration-700 pointer-events-none ${
           currentState === 'speaking'
-            ? 'bg-gradient-to-r from-blue-600/35 via-cyan-500/40 to-violet-600/35 opacity-100 scale-105'
+            ? 'bg-gradient-to-r from-blue-600/40 via-cyan-500/45 to-violet-600/40 opacity-100 scale-105'
             : currentState === 'listening'
-            ? 'bg-gradient-to-r from-emerald-500/30 via-cyan-500/30 to-blue-500/30 opacity-80'
+            ? 'bg-gradient-to-r from-emerald-500/35 via-cyan-500/35 to-blue-500/35 opacity-80'
             : currentState === 'thinking'
-            ? 'bg-gradient-to-r from-violet-600/35 via-amber-500/25 to-blue-600/30 opacity-90'
-            : 'bg-blue-600/15 opacity-60'
+            ? 'bg-gradient-to-r from-violet-600/40 via-amber-500/30 to-blue-600/35 opacity-90'
+            : 'bg-blue-600/20 opacity-60'
         }`}
       />
 
@@ -95,215 +99,127 @@ export const AvatarDisplay: React.FC<AvatarDisplayProps> = ({
         <div className="absolute -inset-2.5 rounded-[32px] border-2 border-emerald-400/80 shadow-[0_0_30px_rgba(16,185,129,0.5)] animate-pulse pointer-events-none z-10" />
       )}
 
-      {/* Main Avatar Container with Breathing Animation */}
+      {/* Main Avatar Container with Breathing / Speech Physics */}
       <div
         className={`relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#0c162c] via-[#070e1c] to-[#03060d] border ${
           currentState === 'speaking' 
-            ? 'border-cyan-400/70 shadow-[0_0_50px_rgba(6,182,212,0.3)]' 
+            ? 'border-cyan-400/80 shadow-[0_0_50px_rgba(6,182,212,0.35)]' 
             : currentState === 'listening'
             ? 'border-emerald-400/70 shadow-[0_0_40px_rgba(16,185,129,0.25)]'
             : 'border-blue-500/30 shadow-[0_0_40px_rgba(37,99,235,0.2)]'
-        } ${sizeClasses} flex items-center justify-center transition-all duration-500`}
-        style={{
-          animation: isSpeaking ? 'breathing 2.4s ease-in-out infinite' : 'breathing 4s ease-in-out infinite'
-        }}
+        } ${sizeClasses} flex items-center justify-center transition-all duration-300`}
       >
-        {photoSrc ? (
-          /* Actual Uploaded Portrait Image */
-          <div className="w-full h-full relative flex items-center justify-center bg-[#05080c] overflow-hidden">
-            <img
-              src={photoSrc}
-              alt="Suriyanarayanan R"
-              className="w-full h-full object-cover object-top transition-transform duration-500"
+        {/* Animated Inner Wrapper for Conversational Nodding Cadence */}
+        <div 
+          className={`w-full h-full relative overflow-hidden ${
+            isSpeaking ? 'animate-avatar-speech' : 'animate-[breathing_4s_ease-in-out_infinite]'
+          }`}
+        >
+          {/* Official Formal Avatar Image: Suriyanarayanan R working at Laptop */}
+          <img
+            src={photoSrc}
+            alt="Suriyanarayanan R — AI Presenter at Laptop"
+            className={`w-full h-full object-cover object-top transition-transform duration-300 ${
+              isSpeaking ? 'scale-[1.015]' : 'scale-100'
+            }`}
+            referrerPolicy="no-referrer"
+          />
+
+          {/* Screen Light Reflection Cast onto Face & Glasses */}
+          <div 
+            className={`absolute inset-0 bg-gradient-to-tr from-cyan-400/15 via-transparent to-transparent pointer-events-none transition-opacity duration-300 ${
+              isSpeaking ? 'animate-screen-glow opacity-80' : 'opacity-30'
+            }`} 
+          />
+
+          {/* Synchronized Mouth/Lip Movement Overlay (visibly articulates during speech) */}
+          {isSpeaking && visemeIndex > 0 && (
+            <div 
+              className="absolute pointer-events-none transition-all duration-75"
               style={{
-                transform: isSpeaking ? 'scale(1.02)' : 'scale(1.0)',
+                top: '35.4%',
+                left: '50.8%',
+                transform: 'translate(-50%, -50%)',
+                width: '10.5%',
+                height: '4.8%',
               }}
-              referrerPolicy="no-referrer"
-            />
-            {/* Soft Ambient Cinematic Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#03060d] via-transparent to-transparent opacity-60 pointer-events-none" />
-          </div>
-        ) : (
-          /* High-Fidelity Custom Vector Representation of Suriyanarayanan R (Formal Suit, Cream Shirt, Tie, Lapel Pin & Mustache) */
-          <div className="w-full h-full relative flex items-center justify-center bg-gradient-to-b from-[#0e192f] via-[#08101e] to-[#03050c]">
-            {/* Background cyan/violet aura */}
-            <div className="absolute top-1/4 w-48 h-48 rounded-full bg-cyan-500/15 blur-2xl pointer-events-none" />
-            <div className="absolute bottom-1/4 w-48 h-48 rounded-full bg-violet-500/15 blur-2xl pointer-events-none" />
-
-            <svg
-              viewBox="0 0 320 380"
-              className="w-full h-full object-cover transform translate-y-2 scale-105"
-              xmlns="http://www.w3.org/2000/svg"
             >
-              <defs>
-                <linearGradient id="avatarHairGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#121316" />
-                  <stop offset="100%" stopColor="#08080a" />
-                </linearGradient>
+              <svg 
+                viewBox="0 0 100 48" 
+                className="w-full h-full drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]"
+              >
+                {visemeIndex === 1 && (
+                  /* Slight open vowel */
+                  <g>
+                    <ellipse cx="50" cy="24" rx="28" ry="10" fill="#2d0a0a" opacity="0.95" />
+                    <ellipse cx="50" cy="20" rx="20" ry="3" fill="#ffffff" opacity="0.85" />
+                    <path d="M 22 24 Q 50 28 78 24 Q 50 32 22 24 Z" fill="#9d4a40" />
+                  </g>
+                )}
+                {visemeIndex === 2 && (
+                  /* Wide open articulation */
+                  <g>
+                    <ellipse cx="50" cy="24" rx="30" ry="14" fill="#240707" opacity="0.98" />
+                    <ellipse cx="50" cy="18" rx="22" ry="4" fill="#ffffff" opacity="0.9" />
+                    <ellipse cx="50" cy="30" rx="16" ry="3.5" fill="#c45a4d" />
+                    <path d="M 20 22 Q 50 38 80 22" stroke="#7a342b" strokeWidth="2.5" fill="none" />
+                  </g>
+                )}
+                {visemeIndex === 3 && (
+                  /* Round consonant/consonant blend */
+                  <g>
+                    <ellipse cx="50" cy="24" rx="24" ry="11" fill="#300a0a" opacity="0.95" />
+                    <ellipse cx="50" cy="19" rx="17" ry="3" fill="#ffffff" opacity="0.8" />
+                    <path d="M 25 24 Q 50 31 75 24" stroke="#8c3e34" strokeWidth="2" fill="none" />
+                  </g>
+                )}
+              </svg>
+            </div>
+          )}
 
-                <linearGradient id="avatarSkinGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#db9f77" />
-                  <stop offset="60%" stopColor="#c58a62" />
-                  <stop offset="100%" stopColor="#b1754e" />
-                </linearGradient>
+          {/* Micro Eye-Blink Overlay */}
+          {isBlinking && (
+            <div 
+              className="absolute pointer-events-none"
+              style={{
+                top: '28.2%',
+                left: '50.8%',
+                transform: 'translate(-50%, -50%)',
+                width: '42%',
+                height: '7%',
+              }}
+            >
+              <svg viewBox="0 0 160 30" className="w-full h-full opacity-90">
+                <path d="M 28 14 Q 48 24 68 14" stroke="#4a2e1d" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+                <path d="M 92 14 Q 112 24 132 14" stroke="#4a2e1d" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+              </svg>
+            </div>
+          )}
 
-                <linearGradient id="avatarSuitGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1d263b" />
-                  <stop offset="40%" stopColor="#121a2a" />
-                  <stop offset="100%" stopColor="#070b13" />
-                </linearGradient>
-
-                <linearGradient id="avatarShirtGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#fffaf0" />
-                  <stop offset="100%" stopColor="#f2e9d2" />
-                </linearGradient>
-
-                <linearGradient id="avatarTieGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1b1c22" />
-                  <stop offset="100%" stopColor="#0b0b0f" />
-                </linearGradient>
-              </defs>
-
-              {/* Suit Shoulders & Torso */}
-              <path
-                d="M 50 380 L 70 290 Q 95 240 160 235 Q 225 240 250 290 L 270 380 Z"
-                fill="url(#avatarSuitGrad)"
-              />
-
-              {/* Cream Shirt Collar & Front */}
-              <polygon
-                points="128,245 160,310 192,245 180,235 140,235"
-                fill="url(#avatarShirtGrad)"
-              />
-
-              {/* Suit Lapels */}
-              <path
-                d="M 95 248 L 138 340 L 160 380 L 115 380 Z"
-                fill="#161f30"
-              />
-              <path
-                d="M 225 248 L 182 340 L 160 380 L 205 380 Z"
-                fill="#101826"
-              />
-
-              {/* Necktie */}
-              <polygon
-                points="154,260 166,260 170,360 160,378 150,360"
-                fill="url(#avatarTieGrad)"
-              />
-              <polygon
-                points="152,254 168,254 165,268 155,268"
-                fill="#252730"
-              />
-
-              {/* Gold Lapel Pin */}
-              <circle cx="118" cy="275" r="4.5" fill="#f59e0b" />
-              <circle cx="118" cy="275" r="2.5" fill="#fbbf24" />
-
-              {/* Neck */}
-              <path
-                d="M 136 210 L 136 248 Q 160 258 184 248 L 184 210 Z"
-                fill="url(#avatarSkinGrad)"
-              />
-              <path
-                d="M 136 210 Q 160 230 184 210 Z"
-                fill="#9e623c"
-                opacity="0.35"
-              />
-
-              {/* Head / Face */}
-              <path
-                d="M 112 135 C 112 85 208 85 208 135 C 208 178 195 220 160 222 C 125 220 112 178 112 135 Z"
-                fill="url(#avatarSkinGrad)"
-              />
-
-              {/* Ears */}
-              <ellipse cx="111" cy="148" rx="6.5" ry="12" fill="#c58a62" />
-              <ellipse cx="209" cy="148" rx="6.5" ry="12" fill="#b97e56" />
-
-              {/* Hair */}
-              <path
-                d="M 106 130 C 104 88 130 55 160 52 C 190 55 216 88 214 130 C 210 102 195 72 160 72 C 125 72 110 102 106 130 Z"
-                fill="url(#avatarHairGrad)"
-              />
-              {/* Hair Volume Side */}
-              <path
-                d="M 106 130 C 104 110 112 90 120 85 C 112 95 109 110 110 135 Z"
-                fill="#08080a"
-              />
-              <path
-                d="M 214 130 C 216 110 208 90 200 85 C 208 95 211 110 210 135 Z"
-                fill="#08080a"
-              />
-
-              {/* Eyebrows */}
-              <path
-                d="M 126 128 Q 142 124 148 128"
-                stroke="#1c1c20"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                fill="none"
-              />
-              <path
-                d="M 172 128 Q 178 124 194 128"
-                stroke="#1c1c20"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                fill="none"
-              />
-
-              {/* Eyes */}
-              <ellipse cx="138" cy="140" rx="6" ry="3.5" fill="#ffffff" />
-              <circle cx="138" cy="140" r="2.8" fill="#1b1c20" />
-              <circle cx="137" cy="139" r="1" fill="#ffffff" />
-
-              <ellipse cx="182" cy="140" rx="6" ry="3.5" fill="#ffffff" />
-              <circle cx="182" cy="140" r="2.8" fill="#1b1c20" />
-              <circle cx="181" cy="139" r="1" fill="#ffffff" />
-
-              {/* Nose */}
-              <path
-                d="M 160 136 L 157 165 Q 160 169 164 165"
-                stroke="#a66a44"
-                strokeWidth="2"
-                strokeLinecap="round"
-                fill="none"
-              />
-
-              {/* Authentic Mustache */}
-              <path
-                d="M 144 176 Q 160 171 176 176 Q 168 184 160 180 Q 152 184 144 176 Z"
-                fill="#121316"
-              />
-
-              {/* Lip-Sync Animated Mouth */}
-              {isSpeaking && mouthOpen ? (
-                <path
-                  d="M 151 187 Q 160 196 169 187 Q 160 191 151 187 Z"
-                  fill="#451818"
-                />
-              ) : (
-                <path
-                  d="M 152 187 Q 160 190 168 187"
-                  stroke="#8f4a38"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-              )}
-            </svg>
+          {/* Laptop Screen Active Code Stream in Bottom-Right */}
+          <div 
+            className="absolute bottom-2 right-2 p-2 rounded-lg bg-black/80 border border-cyan-500/40 text-[9px] font-mono text-cyan-300 max-w-[150px] shadow-lg pointer-events-none hidden sm:block backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-1.5 pb-1 border-b border-cyan-500/20 text-[8px] text-slate-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>IDE: main.cpp / ESP32</span>
+            </div>
+            <div className="pt-1 text-[8px] leading-tight space-y-0.5 opacity-90 font-mono">
+              <div className="text-cyan-400 truncate">#include &lt;WiFi.h&gt;</div>
+              <div className="text-blue-300 truncate">digitalWrite(RELAY, ON);</div>
+              <div className="text-emerald-400 truncate animate-pulse">// 80.6% Anna Univ ECE</div>
+            </div>
           </div>
-        )}
 
-        {/* Live Audio Reactive Waveform Overlay at Bottom */}
-        {currentState === 'speaking' && (
-          <div className="absolute bottom-4 inset-x-0 flex items-center justify-center gap-1 z-20 pointer-events-none px-6">
-            <div className="h-6 w-1 bg-cyan-400 rounded-full animate-wave-1 shadow-[0_0_8px_#06b6d4]" />
-            <div className="h-8 w-1 bg-blue-400 rounded-full animate-wave-2 shadow-[0_0_8px_#60a5fa]" />
-            <div className="h-4 w-1 bg-violet-400 rounded-full animate-wave-3 shadow-[0_0_8px_#a78bfa]" />
-            <div className="h-9 w-1 bg-cyan-300 rounded-full animate-wave-4 shadow-[0_0_8px_#67e8f9]" />
-            <div className="h-5 w-1 bg-blue-500 rounded-full animate-wave-5 shadow-[0_0_8px_#3b82f6]" />
-            <div className="h-7 w-1 bg-cyan-400 rounded-full animate-wave-2 shadow-[0_0_8px_#06b6d4]" />
+          {/* Soft Bottom Cinematic Gradient */}
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#03060d] via-[#03060d]/70 to-transparent pointer-events-none" />
+        </div>
+
+        {/* Presenter Mode Badge */}
+        {showPresenterBadge && (
+          <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/80 border border-blue-500/40 text-[10px] font-mono text-cyan-300 backdrop-blur-md shadow-md">
+            <span className={`w-1.5 h-1.5 rounded-full ${isSpeaking ? 'bg-cyan-400 animate-ping' : 'bg-emerald-400'}`} />
+            <span>{isSpeaking ? 'Presenter Live' : 'AI Presenter Ready'}</span>
           </div>
         )}
       </div>

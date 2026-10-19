@@ -1,0 +1,61 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 679 >>
+stream
+BT
+/F1 18 Tf
+50 730 Td
+(Centre of Excellence - IoT, Kings College of Engineering & I) Tj
+/F2 12 Tf
+0 -25 Td
+(CERTIFICATE OF PARTICIPATION & TECHNICAL MASTERY) Tj
+/F1 22 Tf
+0 -45 Td
+(Two Days Workshop on IoT with Arduino / Raspberry Pi) Tj
+/F2 12 Tf
+0 -35 Td
+(THIS CERTIFICATE IS PROUDLY CONFERRED UPON) Tj
+/F1 20 Tf
+0 -30 Td
+(SURIYANARAYANAN R) Tj
+/F2 11 Tf
+0 -24 Td
+(B.E. Electronics and Communication Engineering - Kings College of Engineering) Tj
+0 -18 Td
+(Academic Standing: 80.6% Anna University) Tj
+0 -35 Td
+(Hands-on two-day practical workshop on embedded prototyping, sensor integration, Ardu) Tj
+0 -30 Td
+(Date: October 26–27, 2023  |  Ref: KCE/COE-IOT/WS-23/44) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000244 00000 n 
+0000000600 00000 n 
+0000000673 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+740
+%%EOF

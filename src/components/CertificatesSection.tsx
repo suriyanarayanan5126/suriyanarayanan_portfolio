@@ -49,13 +49,17 @@ export const CertificatesSection: React.FC = () => {
       // Storage access catch
     }
 
-    // 2. Discover static PDF assets in /assets/certificates/ or /certificates/
+    // 2. Discover static PDF assets across possible locations
     activeCertificates.forEach(async (cert) => {
       const candidatePaths = [
+        cert.uploadedFileName ? `/certificates/${cert.uploadedFileName}` : '',
+        cert.uploadedFileName ? `/${cert.uploadedFileName}` : '',
+        cert.uploadedFileName ? `/assets/certificates/${cert.uploadedFileName}` : '',
+        `/certificates/${cert.fileName}`,
         `/assets/certificates/${cert.fileName}`,
         cert.filePath,
-        `/certificates/${cert.fileName}`
-      ];
+        ...(cert.aliases ? cert.aliases.map(a => `/certificates/${a}`) : [])
+      ].filter(Boolean);
 
       for (const targetPath of candidatePaths) {
         try {
@@ -201,10 +205,19 @@ export const CertificatesSection: React.FC = () => {
                         {isAward ? <Trophy className="w-6 h-6 text-amber-500" /> : <Award className="w-6 h-6" />}
                       </div>
                       <p className="text-xs font-mono font-semibold text-slate-700 truncate max-w-[240px]">
-                        {cert.fileName}
+                        {cert.uploadedFileName || cert.fileName}
                       </p>
                       <span className="inline-block text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
-                        Click to Inspect Certificate
+                        Inspect Certificate
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Uploaded File Reference Tag */}
+                  {cert.uploadedFileName && (
+                    <div className="absolute top-3 right-3 z-10">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-white/90 text-slate-600 border border-slate-200 shadow-xs">
+                        {cert.uploadedFileName}
                       </span>
                     </div>
                   )}

@@ -37,7 +37,7 @@ TECHNICAL SKILLS
 - Telecom & AI: ${SKILLS_DATA.telecomAI.join(', ')}
 
 PROJECTS
-1. Design and Implementation of a Digital Oorai Display using Embedded System (Patent Applied: TN/PIC/20256-26-PA106)
+1. Design and Implementation of a Digital Oorai Display using Embedded System (Patent-Applied Academic Project)
 2. Smart Home Automation — Developed an IoT-based system for controlling home appliances using embedded hardware.
 3. Bidirectional Visitor Counter — Developed an IR-sensor-based system for automated entry and exit counting with automated lighting control. Awarded II Prize at Electrovibez '23.
 4. Smart Scrolling Display — Microcontroller-based dynamic message broadcasting and real-time scrolling display system.
@@ -201,7 +201,7 @@ CERTIFICATIONS & ACHIEVEMENTS
                     <span className="text-xs font-mono text-emerald-400">Patent Applied</span>
                   </div>
                   <p className="text-xs text-slate-400 italic">
-                    Patent Application No: TN/PIC/20256-26-PA106 · Technical details confidential pursuant to patent filing.
+                    Confidential intellectual property pursuant to patent filing.
                   </p>
                 </div>
 

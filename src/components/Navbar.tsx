@@ -6,12 +6,12 @@ import {
   Github, 
   Linkedin, 
   FileText,
-  Volume2
+  Mail,
+  ArrowRight
 } from 'lucide-react';
 import { PERSONAL_INFO } from '../data/portfolioData.ts';
 
 interface NavbarProps {
-  onOpenAvatar: () => void;
   onOpenResume: () => void;
 }
 
@@ -21,7 +21,7 @@ interface NavItem {
   id: string;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenResume }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState<string>('hero');
@@ -31,27 +31,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
     { label: 'About', href: '#about', id: 'about' },
     { label: 'Skills', href: '#skills', id: 'skills' },
     { label: 'Projects', href: '#projects', id: 'projects' },
-    { label: 'Training', href: '#training', id: 'training' },
     { label: 'Certificates', href: '#certificates', id: 'certificates' },
+    { label: 'Training', href: '#training', id: 'training' },
     { label: 'Education', href: '#education', id: 'education' },
     { label: 'Contact', href: '#contact', id: 'contact' },
   ];
 
-  // High-performance Real-Time Scroll Spy handler
   const handleScroll = useCallback(() => {
     const scrollY = window.scrollY;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
 
-    // 1. Calculate top progress bar percentage
     const maxScroll = documentHeight - windowHeight;
     const progress = maxScroll > 0 ? (scrollY / maxScroll) * 100 : 0;
     setScrollProgress(Math.min(100, Math.max(0, progress)));
 
-    // 2. Set compact background on scroll
     setIsScrolled(scrollY > 20);
 
-    // 3. Real-Time Active Section Detection
     if (scrollY < 200) {
       setActiveSection('hero');
       return;
@@ -76,31 +72,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
         }
       }
     }
-
-    if (currentActive === 'hero' && scrollY >= 200) {
-      let closestSection = navLinks[0].id;
-      let minDistance = Infinity;
-
-      for (const item of navLinks) {
-        const el = document.getElementById(item.id);
-        if (el) {
-          const top = el.offsetTop;
-          const distance = Math.abs(focalLine - top);
-          if (distance < minDistance) {
-            minDistance = distance;
-            closestSection = item.id;
-          }
-        }
-      }
-      currentActive = closestSection;
-    }
-
     setActiveSection(currentActive);
   }, [navLinks]);
 
   useEffect(() => {
     let ticking = false;
-
     const onScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
@@ -113,7 +89,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
 
     window.addEventListener('scroll', onScroll, { passive: true });
     handleScroll();
-
     return () => window.removeEventListener('scroll', onScroll);
   }, [handleScroll]);
 
@@ -133,9 +108,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
   return (
     <>
       {/* Top Scroll Progress Indicator */}
-      <div className="fixed top-0 left-0 right-0 h-[2px] bg-slate-900/80 z-50 pointer-events-none">
+      <div className="fixed top-0 left-0 right-0 h-[2.5px] bg-slate-100 z-50 pointer-events-none">
         <div
-          className="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-violet-400 shadow-[0_0_12px_#06b6d4] transition-all duration-75 ease-out"
+          className="h-full bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 shadow-sm transition-all duration-75 ease-out"
           style={{ width: `${scrollProgress}%` }}
         />
       </div>
@@ -143,8 +118,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
       <nav
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? 'bg-[#030712]/92 backdrop-blur-md border-b border-blue-500/20 py-2.5 shadow-[0_4px_30px_rgba(0,0,0,0.8)]'
-            : 'bg-transparent py-4 sm:py-5'
+            ? 'bg-white/92 backdrop-blur-md border-b border-slate-200/90 py-3 shadow-[0_2px_15px_rgba(0,0,0,0.04)]'
+            : 'bg-white/70 backdrop-blur-xs py-4 sm:py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -160,22 +135,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
               }}
               className="flex items-center gap-2.5 group cursor-pointer"
             >
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center font-bold text-white text-sm tracking-wider shadow-[0_0_15px_rgba(59,130,246,0.5)] group-hover:scale-105 transition-transform font-mono">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center font-bold text-white text-sm tracking-wider shadow-md group-hover:scale-105 transition-transform font-mono">
                 SR
               </div>
               <div className="flex flex-col">
-                <span className="font-heading font-bold text-sm sm:text-base text-white tracking-wide group-hover:text-cyan-300 transition-colors">
-                  {PERSONAL_INFO.nameUpper}
+                <span className="font-heading font-extrabold text-sm sm:text-base text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
+                  {PERSONAL_INFO.name}
                 </span>
-                <span className="text-[10px] font-mono text-cyan-400 tracking-widest uppercase flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                  <span>ECE '26 · Builder</span>
+                <span className="text-[11px] font-mono text-slate-500 tracking-normal flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span>ECE 2026 · 80.6% Anna Univ</span>
                 </span>
               </div>
             </a>
 
-            {/* Desktop Navigation Links with Real-Time Sliding Scroll Spy Indicator */}
-            <div className="hidden lg:flex items-center p-1 rounded-full bg-[#081020]/80 border border-blue-500/20 backdrop-blur-md shadow-inner">
+            {/* Desktop Navigation Links */}
+            <div className="hidden lg:flex items-center p-1 rounded-full bg-slate-100/80 border border-slate-200/80 shadow-xs">
               {navLinks.map((link) => {
                 const isActive = activeSection === link.id;
                 return (
@@ -183,23 +158,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
                     key={link.id}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.id)}
-                    className={`relative px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider rounded-full transition-colors duration-200 cursor-pointer ${
+                    className={`relative px-4 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 cursor-pointer ${
                       isActive
-                        ? 'text-cyan-300 font-bold'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'text-blue-700 font-semibold'
+                        : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     {isActive && (
                       <motion.span
                         layoutId="activeNavPill"
-                        className="absolute inset-0 rounded-full bg-blue-500/20 border border-cyan-400/50 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
-                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                        className="absolute inset-0 rounded-full bg-white shadow-xs border border-slate-200/70"
+                        transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                       />
                     )}
                     <span className="relative z-10 flex items-center gap-1.5">
-                      {isActive && (
-                        <span className="w-1 h-1 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_6px_#06b6d4]" />
-                      )}
                       <span>{link.label}</span>
                     </span>
                   </a>
@@ -209,13 +181,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
 
             {/* Right Action Controls */}
             <div className="hidden sm:flex items-center gap-3">
-              {/* Social Icons */}
-              <div className="flex items-center gap-1.5 pr-2 border-r border-slate-800">
+              <div className="flex items-center gap-1 pr-2 border-r border-slate-200">
                 <a
                   href={PERSONAL_INFO.github}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent hover:border-slate-800 transition-all"
+                  className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                   title="GitHub Profile"
                 >
                   <Github className="w-4 h-4" />
@@ -224,7 +195,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
                   href={PERSONAL_INFO.linkedin}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2 rounded-lg text-slate-400 hover:text-[#0077b5] hover:bg-slate-900 border border-transparent hover:border-slate-800 transition-all"
+                  className="p-2 rounded-xl text-slate-600 hover:text-[#0077b5] hover:bg-slate-100 transition-colors"
                   title="LinkedIn Profile"
                 >
                   <Linkedin className="w-4 h-4" />
@@ -234,35 +205,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
               {/* Resume button */}
               <button
                 onClick={onOpenResume}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-slate-300 hover:text-white bg-[#091122]/90 hover:bg-[#0f1d38] border border-slate-800 hover:border-cyan-500/50 transition-all cursor-pointer shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 transition-all cursor-pointer shadow-xs"
               >
-                <FileText className="w-3.5 h-3.5 text-cyan-400" />
+                <FileText className="w-3.5 h-3.5 text-blue-600" />
                 <span>Resume</span>
               </button>
 
-              {/* Meet Me Avatar Launcher */}
-              <button
-                onClick={onOpenAvatar}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white tracking-wide transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] cursor-pointer"
+              {/* Contact Me CTA */}
+              <a
+                href="#contact"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white tracking-wide transition-all shadow-sm hover:shadow cursor-pointer"
               >
-                <Volume2 className="w-4 h-4 fill-current" />
-                <span>Meet Me</span>
-              </button>
+                <span>Get In Touch</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
             </div>
 
             {/* Mobile Menu Toggle Button */}
             <div className="flex items-center gap-2 lg:hidden">
               <button
-                onClick={onOpenAvatar}
-                className="px-2.5 py-1 rounded bg-cyan-500 text-black text-xs font-semibold flex items-center gap-1 cursor-pointer"
+                onClick={onOpenResume}
+                className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-800 text-xs font-semibold flex items-center gap-1 cursor-pointer border border-slate-200"
               >
-                <Volume2 className="w-3.5 h-3.5" />
-                <span>Meet</span>
+                <FileText className="w-3.5 h-3.5 text-blue-600" />
+                <span>Resume</span>
               </button>
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg text-slate-400 hover:text-white bg-slate-900 border border-slate-800 cursor-pointer"
+                className="p-2 rounded-xl text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 cursor-pointer"
                 aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -271,7 +242,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer with Real-Time Active Indicators */}
+        {/* Mobile Navigation Drawer */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
@@ -279,10 +250,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25 }}
-              className="lg:hidden bg-[#030712]/98 backdrop-blur-xl border-b border-blue-500/30 px-6 py-5 mt-2 space-y-2 overflow-hidden"
+              className="lg:hidden bg-white/98 backdrop-blur-xl border-b border-slate-200 px-6 py-5 mt-2 space-y-1.5 overflow-hidden shadow-lg"
             >
-              <div className="text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-2">
-                Navigation Index
+              <div className="text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-2">
+                Navigation
               </div>
 
               {navLinks.map((link) => {
@@ -292,52 +263,50 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAvatar, onOpenResume }) =>
                     key={link.id}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.id)}
-                    className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-mono uppercase tracking-wider transition-all ${
+                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                       isActive
-                        ? 'bg-blue-950/60 border border-blue-500/40 text-cyan-300 font-bold shadow-[0_0_15px_rgba(6,182,212,0.2)]'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-900/60'
+                        ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/80 shadow-xs'
+                        : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >
                     <span>{link.label}</span>
                     {isActive ? (
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-cyan-300 border border-blue-500/30">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">
                         ACTIVE
                       </span>
                     ) : (
-                      <span className="text-slate-600 text-xs">→</span>
+                      <span className="text-slate-400 text-xs">→</span>
                     )}
                   </a>
                 );
               })}
 
-              <div className="pt-4 border-t border-slate-800/80 flex flex-col gap-2.5">
+              <div className="pt-4 border-t border-slate-200 flex flex-col gap-2.5">
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
                     onOpenResume();
                   }}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-slate-900 text-xs font-mono text-slate-200 border border-slate-700 hover:border-cyan-500/40 cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-100 text-xs font-semibold text-slate-800 border border-slate-200 cursor-pointer"
                 >
-                  <FileText className="w-4 h-4 text-cyan-400" />
-                  <span>View & Print Resume</span>
+                  <FileText className="w-4 h-4 text-blue-600" />
+                  <span>View Professional Resume</span>
                 </button>
 
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenAvatar();
-                  }}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white text-xs font-semibold cursor-pointer shadow-md"
+                <a
+                  href="#contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-semibold cursor-pointer shadow-sm"
                 >
-                  <Volume2 className="w-4 h-4" />
-                  <span>Meet Talking Avatar</span>
-                </button>
+                  <Mail className="w-4 h-4" />
+                  <span>Contact Suriyanarayanan</span>
+                </a>
 
                 <div className="flex justify-center gap-5 pt-2">
-                  <a href={PERSONAL_INFO.github} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition-colors">
+                  <a href={PERSONAL_INFO.github} target="_blank" rel="noreferrer" className="text-slate-500 hover:text-slate-900 transition-colors">
                     <Github className="w-5 h-5" />
                   </a>
-                  <a href={PERSONAL_INFO.linkedin} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#0077b5] transition-colors">
+                  <a href={PERSONAL_INFO.linkedin} target="_blank" rel="noreferrer" className="text-slate-500 hover:text-[#0077b5] transition-colors">
                     <Linkedin className="w-5 h-5" />
                   </a>
                 </div>

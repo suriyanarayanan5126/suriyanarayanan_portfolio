@@ -13,6 +13,9 @@ export interface Project {
   hasVideoSlot?: boolean;
   videoPath?: string;
   videoFileName?: string;
+  uploadedFileName?: string;
+  thumbnailUrl?: string;
+  videoAliases?: string[];
 }
 
 export interface Internship {
@@ -28,17 +31,19 @@ export interface Internship {
 }
 
 export interface CertificateItem {
-  id: string;                         // Unique identifier, e.g. "cert-kings-project-expo-2026"
-  title: string;                      // Display title of certificate
+  id: string;                         // Unique identifier
+  title: string;                      // Real verified title of certificate
   issuer: string;                     // Issuing authority / organization
   category: 'award' | 'certification' | 'workshop' | 'internship';
   date: string;                       // Date issued / period
   achievementLevel?: string;          // e.g. "First Prize Winner"
   verificationId?: string;            // Official certificate verification / roll / ID
   details: string;                    // Comprehensive description
-  fileName: string;                   // The EXACT filename of the uploaded PDF file in public/certificates/
-  filePath: string;                   // The exact web path to the PDF, e.g. "/certificates/kings-project-expo-2026.pdf"
-  imagePath?: string;                 // Web path to file (alias for backward compatibility)
+  fileName: string;                   // Normalized or expected filename in public/certificates/
+  filePath: string;                   // Web route to PDF
+  imagePath?: string;                 // Preview image or fallback
+  uploadedFileName?: string;          // The user's uploaded filename (e.g. "4elec23.pdf", "5.pdf", etc.)
+  aliases?: string[];                 // Supported alternate names
   pageNumber?: number;                // Reference index
   isExcluded?: boolean;               // If true, hidden from gallery without deleting (used for Java Full Stack)
 }
@@ -65,7 +70,7 @@ export const PERSONAL_INFO = {
   location: "Mannargudi, Tamil Nadu, India",
   github: "https://github.com/suriyanarayanan5126",
   linkedin: "https://www.linkedin.com/in/suriya-narayanan-r-1690862a2/",
-  summary: "Motivated 2026 Electronics and Communication Engineering graduate seeking an entry-level opportunity in IT/Software Development. Strong foundation in Java, HTML, CSS, and Bootstrap with hands-on experience in software projects, embedded systems, IoT, testing, and troubleshooting. Quick learner with strong problem-solving, teamwork, and adaptability skills, looking to contribute to software development and technology-driven projects."
+  summary: "Motivated 2026 Electronics and Communication Engineering graduate from Kings College of Engineering with an academic standing of 80.6% under Anna University. Passionate builder with a strong foundation in Java, Object-Oriented Programming, HTML, CSS, and Bootstrap, complemented by hands-on embedded hardware engineering in ESP32, IoT architectures, sensor automation, and robotics."
 };
 
 export const SKILLS_DATA = {
@@ -80,7 +85,7 @@ export const SKILLS_DATA = {
 export const PROJECTS_DATA: Project[] = [
   {
     // STRICT PATENT CONFIDENTIALITY:
-    // Only the project title is shown:
+    // Only the exact project title is shown:
     // "Design and Implementation of a Digital Oorai Display using Embedded System"
     // No description, image, video, technologies, implementation details, source code, circuit diagrams, algorithms, or project links.
     id: "patent-oorai-display",
@@ -97,7 +102,7 @@ export const PROJECTS_DATA: Project[] = [
     type: "IoT & Embedded System",
     shortSummary: "Developed an IoT-based system for controlling home appliances using embedded hardware.",
     description: "Architected a reliable home automation system integrating embedded hardware, relay controllers, and sensor interfaces to remotely manage electrical appliances with low latency and power efficiency.",
-    tags: ["IoT", "Embedded Hardware", "Relay Switching", "Microcontroller", "Home Automation"],
+    tags: ["IoT", "Embedded Hardware", "Relay Switching", "ESP32", "Home Automation"],
     features: [
       "Appliance switching via solid-state and mechanical relays",
       "Wireless trigger interface for local and remote device management",
@@ -105,16 +110,24 @@ export const PROJECTS_DATA: Project[] = [
     ],
     interactiveType: "smart-home",
     hasVideoSlot: true,
-    videoPath: "/videos/iot-smart-home.mp4",
-    videoFileName: "iot-smart-home.mp4",
+    videoPath: "/videos/home automation video(1).mp4",
+    videoFileName: "home automation video(1).mp4",
+    uploadedFileName: "home automation video(1).mp4",
+    thumbnailUrl: "/assets/projects/iot-smart-home-thumb.jpg",
+    videoAliases: [
+      "home automation video(1).mp4",
+      "home_automation_video_1.mp4",
+      "iot-smart-home.mp4",
+      "smart-home.mp4"
+    ]
   },
   {
     id: "visitor-counter",
     title: "Bidirectional Visitor Counter",
     category: "embedded",
     type: "Sensor Automation & Hardware",
-    shortSummary: "Developed an IR-sensor-based system for automated entry and exit counting.",
-    description: "Engineered an infrared dual-beam gate sensor mechanism that detects direction of movement, accurately tracks human occupancy in real time, and automatically actuates room lighting to conserve energy. Awarded II Prize at Electrovibez '23.",
+    shortSummary: "Developed an IR-sensor-based system for automated entry and exit counting with automated lighting control.",
+    description: "Engineered an infrared dual-beam gate sensor mechanism that detects direction of movement, accurately tracks human occupancy in real time on a 16x2 LCD, and automatically actuates room lighting to conserve energy. Awarded II Prize at Electrovibez '23.",
     tags: ["IR Sensors", "Embedded Systems", "Hardware Integration", "Energy Conservation"],
     features: [
       "Dual infrared transmitter/receiver pairs with directional logic",
@@ -124,8 +137,15 @@ export const PROJECTS_DATA: Project[] = [
     ],
     interactiveType: "visitor-counter",
     hasVideoSlot: true,
-    videoPath: "/videos/visitor-counter.mp4",
-    videoFileName: "visitor-counter.mp4",
+    videoPath: "/videos/visitor counter video(1).mp4",
+    videoFileName: "visitor counter video(1).mp4",
+    uploadedFileName: "visitor counter video(1).mp4",
+    thumbnailUrl: "/assets/projects/visitor-counter-thumb.jpg",
+    videoAliases: [
+      "visitor counter video(1).mp4",
+      "visitor_counter_video_1.mp4",
+      "visitor-counter.mp4"
+    ]
   },
   {
     id: "smart-scrolling-display",
@@ -133,35 +153,49 @@ export const PROJECTS_DATA: Project[] = [
     category: "embedded",
     type: "Microcontroller LED System",
     shortSummary: "Microcontroller-based dynamic message broadcasting and real-time scrolling display system.",
-    description: "Engineered an embedded digital message board capable of rendering real-time text notices, dynamic information feeds, and alerts using microcontroller multiplexing and display drivers.",
+    description: "Engineered an embedded digital message board capable of rendering real-time text notices, dynamic information feeds, and alerts using microcontroller multiplexing and 16x64 LED dot matrix drivers.",
     tags: ["Microcontroller", "Display Multiplexing", "Embedded Firmware", "Real-Time Systems"],
     features: [
       "High-refresh multiplexed LED matrix driving logic",
       "Programmable string buffers with directional smooth scroll",
-      "Low-power stand-by mode and rapid memory refresh"
+      "Mobile Wi-Fi configuration app interface for instant text updates"
     ],
     interactiveType: "scrolling-display",
     hasVideoSlot: true,
-    videoPath: "/videos/scrolling-display.mp4",
-    videoFileName: "scrolling-display.mp4",
+    videoPath: "/videos/smart scrolling display video(1).mp4",
+    videoFileName: "smart scrolling display video(1).mp4",
+    uploadedFileName: "smart scrolling display video(1).mp4",
+    thumbnailUrl: "/assets/projects/scrolling-display-thumb.jpg",
+    videoAliases: [
+      "smart scrolling display video(1).mp4",
+      "smart_scrolling_display_video_1.mp4",
+      "scrolling-display.mp4"
+    ]
   },
   {
     id: "suriya-ai",
-    title: "Suriya AI & Salary Prediction",
+    title: "Suriya AI",
     category: "ai",
-    type: "Machine Learning Intelligence",
-    shortSummary: "Developed a machine-learning project using Linear Regression during internship training.",
-    description: "Built and evaluated a supervised machine learning regression pipeline to predict professional salary compensation trends based on experience years, education, and domain variables, implemented during IBM SkillsBuild training.",
-    tags: ["Machine Learning", "Linear Regression", "Predictive Analytics", "Model Evaluation"],
+    type: "AI-Powered Study Assistant",
+    shortSummary: "Snap & Study assistant that analyzes diagrams, flowcharts, code, and notes with step-by-step explanations.",
+    description: "Built an intelligent study assistant application powered by Gemini AI and Python Streamlit that allows students to upload image notes, algorithm flowcharts, or code, receiving instant structured explanations and email dispatch.",
+    tags: ["AI Assistant", "Computer Vision", "Streamlit", "Gemini AI", "EdTech"],
     features: [
-      "Feature engineering and data preprocessing on compensation benchmarks",
-      "Linear regression modeling with error minimization and coefficient analysis",
-      "Trained model verification with realistic salary variance estimations"
+      "Study material image analysis and flowchart breakdown",
+      "Interactive follow-up questions and conversational study guidance",
+      "One-click automated email dispatch of explanations to students"
     ],
     interactiveType: "salary-predictor",
     hasVideoSlot: true,
-    videoPath: "/videos/salary-prediction.mp4",
-    videoFileName: "salary-prediction.mp4",
+    videoPath: "/videos/suriya ai video(1).mp4",
+    videoFileName: "suriya ai video(1).mp4",
+    uploadedFileName: "suriya ai video(1).mp4",
+    thumbnailUrl: "/assets/projects/suriya-ai-thumb.jpg",
+    videoAliases: [
+      "suriya ai video(1).mp4",
+      "suriya_ai_video_1.mp4",
+      "salary-prediction.mp4"
+    ]
   },
   {
     id: "surveillance-car",
@@ -169,16 +203,23 @@ export const PROJECTS_DATA: Project[] = [
     category: "robotics",
     type: "Embedded Robotics & Remote Vision",
     shortSummary: "Embedded robotics vehicle system featuring wireless motor navigation and live surveillance monitoring.",
-    description: "Constructed an agile motorized robotic chassis equipped with motor drivers, microcontroller control, and wireless visual telemetry for area inspection and remote surveillance.",
+    description: "Constructed an agile motorized robotic rover chassis equipped with motor drivers, microcontroller control, and wireless visual telemetry for area inspection and remote surveillance.",
     tags: ["Robotics", "Embedded Motor Drivers", "Wireless Telemetry", "Hardware Prototyping"],
     features: [
       "Dual H-Bridge motor driver integration with PWM speed calibration",
-      "Wireless command reception for omnidirectional maneuverability",
-      "Hardware mounting plate configured for wireless video streaming payload"
+      "Wireless web control pad for omnidirectional maneuverability",
+      "Night illumination LED headlights and live video camera streaming"
     ],
     hasVideoSlot: true,
-    videoPath: "/videos/surveillance-car.mp4",
-    videoFileName: "surveillance-car.mp4",
+    videoPath: "/videos/survilliance car video(1).mp4",
+    videoFileName: "survilliance car video(1).mp4",
+    uploadedFileName: "survilliance car video(1).mp4",
+    thumbnailUrl: "/assets/projects/surveillance-car-thumb.jpg",
+    videoAliases: [
+      "survilliance car video(1).mp4",
+      "survilliance_car_video_1.mp4",
+      "surveillance-car.mp4"
+    ]
   },
   {
     id: "food-munch-website",
@@ -249,45 +290,183 @@ export const INTERNSHIPS_DATA: Internship[] = [
     id: "edunet-aicte",
     title: "AI & Machine Learning 6-Week Internship",
     organization: "Edunet Foundation in collaboration with AICTE & IBM SkillsBuild",
-    location: "India / Collaborative Program",
+    location: "Virtual Technical Immersion",
     period: "18.06.2025 – 30.07.2025",
-    roleType: "6-Week Intensive Internship",
-    description: "Participated in an intensive technical curriculum on AI and Machine Learning technologies under the national initiative powered by AICTE and Edunet Foundation.",
+    roleType: "Government-Backed National AI Internship",
+    description: "Successfully participated in an intensive 6-week curriculum on Artificial Intelligence and Machine Learning technologies under AICTE guidance.",
     keyLearnings: [
-      "Deep dive into machine learning workflows, dataset preparation, and supervised algorithms",
-      "Collaboration on engineering problems under mentor guidance",
-      "Student Identification: STU657aa855cd1cb1702537301"
+      "Core machine learning mathematical algorithms and data pipeline design",
+      "Practical exploratory data analysis (EDA) and predictive modeling",
+      "Implementation of applied machine learning projects"
     ],
-    verifiedCredential: "Edunet Foundation & AICTE Certificate of Participation"
-  },
-  {
-    id: "fantasy-solution",
-    title: "Artificial Intelligence Inplant Training",
-    organization: "Fantasy Solution Software Development and Training",
-    location: "Melapudur, Trichy, Tamil Nadu",
-    period: "01.07.2025 – 01.08.2025",
-    roleType: "Software & AI Training",
-    description: "Underwent hands-on training and coursework on Artificial Intelligence concepts, software engineering patterns, and practical implementation.",
-    keyLearnings: [
-      "Core AI architectures and real-world software integration paradigms",
-      "Hands-on coding, debugging, and verification of intelligent software components"
-    ],
-    verifiedCredential: "Certificate of Accomplishment, Fantasy Solution Trichy"
+    verifiedCredential: "Student STU ID: STU657aa855cd1cb1702537301"
   }
 ];
 
-/**
- * CENTRALIZED CERTIFICATE CONFIGURATION LIST (PDF FORMAT)
- * 
- * Manage certificates individually in separate PDF format:
- * 1. Upload individual certificate PDF files (.pdf) to: public/certificates/
- * 2. Register or update the entry below with its exact `fileName` and `filePath`.
- * 3. Or upload each PDF directly through the UI card using the "Select Certificate PDF" button.
- * 
- * Each certificate PDF is rendered into a crisp preview automatically, and visitors can inspect
- * or download the authentic PDF file directly.
- */
 export const CERTIFICATES_DATA: CertificateItem[] = [
+  {
+    id: "cert-electrovibez-23",
+    title: "Electrovibez '23 National Level Technical Symposium — II Prize",
+    issuer: "Kings College of Engineering (Dept of ECE & IEEE)",
+    category: "award",
+    date: "10.10.2023",
+    achievementLevel: "Second Prize Winner",
+    details: "Demonstrated project titled 'Bi-Directional visitor counter with light control' in the National Level Technical Symposium and won Second Prize.",
+    fileName: "4elec23.pdf",
+    filePath: "/certificates/4elec23.pdf",
+    imagePath: "/certificates/4elec23.pdf",
+    uploadedFileName: "4elec23.pdf",
+    aliases: ["4elec23.pdf", "electrovibez-23.pdf", "visitor_counter_award.pdf"],
+    pageNumber: 4
+  },
+  {
+    id: "cert-mini-project-expo-2023",
+    title: "Mini Project Expo 2023 — 1st Place",
+    issuer: "Kings College of Engineering, Dept of ECE & S&H",
+    category: "award",
+    date: "25.05.2023",
+    achievementLevel: "1st Place Winner",
+    details: "Won 1st Place in the Mini Project Expo organized by Department of Electronics and Communication Engineering.",
+    fileName: "5.pdf",
+    filePath: "/certificates/5.pdf",
+    imagePath: "/certificates/5.pdf",
+    uploadedFileName: "5.pdf",
+    aliases: ["5.pdf", "mini-project-expo-2023.pdf"],
+    pageNumber: 5
+  },
+  {
+    id: "cert-mini-project-expo-2024",
+    title: "Mini Project Expo 2024 — II nd Position",
+    issuer: "Kings College of Engineering & ISTE Students Chapter [TN 217]",
+    category: "award",
+    date: "03.04.2024",
+    achievementLevel: "2nd Position Winner",
+    details: "Secured Second Position in the Mini Project Expo organized under ISTE Students Chapter TN 217.",
+    fileName: "6.pdf",
+    filePath: "/certificates/6.pdf",
+    imagePath: "/certificates/6.pdf",
+    uploadedFileName: "6.pdf",
+    aliases: ["6.pdf", "mini-project-expo-2024.pdf"],
+    pageNumber: 6
+  },
+  {
+    id: "cert-ibm-credly",
+    title: "Artificial Intelligence Fundamentals",
+    issuer: "IBM SkillsBuild & Credly",
+    category: "certification",
+    date: "01.07.2025",
+    verificationId: "c9850c1b-ea3d-4e6c-a7f0-1ead9249e9b0",
+    details: "Officially recognized for commitment to professional excellence and satisfying all requirements for Artificial Intelligence Fundamentals. Verified badge on Credly.",
+    fileName: "7.pdf",
+    filePath: "/certificates/7.pdf",
+    imagePath: "/certificates/7.pdf",
+    uploadedFileName: "7.pdf",
+    aliases: ["7.pdf", "ibm-skillsbuild-ai-fundamentals.pdf", "ibm_credly.pdf"],
+    pageNumber: 7
+  },
+  {
+    id: "cert-nxtwave-static",
+    title: "Build Your Own Static Website",
+    issuer: "NxtWave CCBP 4.0 Academy (NASSCOM)",
+    category: "certification",
+    date: "11.02.2025",
+    verificationId: "FPSQRCSCGL",
+    details: "Successfully completed hands-on coursework covering HTML5, CSS3, Bootstrap grid systems, and layout design designed by top alumni from Google, Amazon, and Microsoft.",
+    fileName: "8.pdf",
+    filePath: "/certificates/8.pdf",
+    imagePath: "/certificates/8.pdf",
+    uploadedFileName: "8.pdf",
+    aliases: ["8.pdf", "nxtwave-build-static-website.pdf"],
+    pageNumber: 8
+  },
+  {
+    id: "cert-java-fullstack",
+    title: "Java Full Stack Development Certification",
+    issuer: "Unique Innovibe",
+    category: "certification",
+    date: "2024 – 2025",
+    details: "Comprehensive certification covering Core Java, Object-Oriented Programming, Java Full Stack architecture, database connectivity, and backend service integration.",
+    fileName: "9.pdf",
+    filePath: "/certificates/9.pdf",
+    imagePath: "/certificates/9.pdf",
+    uploadedFileName: "9.pdf",
+    aliases: ["9.pdf", "java-full-stack-certification.pdf"],
+    pageNumber: 9,
+    isExcluded: true // STRICTLY EXCLUDED from public display per explicit user instruction
+  },
+  {
+    id: "cert-nxtwave-responsive",
+    title: "Build Your Own Responsive Website",
+    issuer: "NxtWave CCBP 4.0 Academy (NASSCOM)",
+    category: "certification",
+    date: "25.02.2025",
+    verificationId: "UFXPKMXZKP",
+    details: "Successfully completed advanced coursework covering responsive web design paradigms, Bootstrap frameworks, and modern CSS Flexbox architectures.",
+    fileName: "10.pdf",
+    filePath: "/certificates/10.pdf",
+    imagePath: "/certificates/10.pdf",
+    uploadedFileName: "10.pdf",
+    aliases: ["10.pdf", "nxtwave-build-responsive-website.pdf"],
+    pageNumber: 10
+  },
+  {
+    id: "cert-iot-workshop-kings",
+    title: "Two Days Workshop on IoT with Arduino / Raspberry Pi",
+    issuer: "Centre of Excellence - IoT, Kings College of Engineering & IEEE",
+    category: "workshop",
+    date: "26.10.2023 – 27.10.2023",
+    details: "Hands-on two-day practical workshop on embedded prototyping, sensor integration, Arduino programming, and Raspberry Pi system interfacing.",
+    fileName: "11.pdf",
+    filePath: "/certificates/11.pdf",
+    imagePath: "/certificates/11.pdf",
+    uploadedFileName: "11.pdf",
+    aliases: ["11.pdf", "iot-workshop-arduino-raspberry-pi.pdf"],
+    pageNumber: 11
+  },
+  {
+    id: "cert-ipr-mic-aicte",
+    title: "Role of Innovation in Startup Success & IPR / Patents",
+    issuer: "MIC AICTE Sponsored Impact Lecture Series & Kings College IIC",
+    category: "workshop",
+    date: "17.05.2024",
+    details: "Attended MIC AICTE sponsored impact lecture series on 'Role of Innovation in Startup Success and Enforcement of Intellectual Property Rights - Patents and Design'.",
+    fileName: "12 (2).pdf",
+    filePath: "/certificates/12 (2).pdf",
+    imagePath: "/certificates/12 (2).pdf",
+    uploadedFileName: "12 (2).pdf",
+    aliases: ["12 (2).pdf", "12.pdf", "ipr-patents-innovation-lecture.pdf"],
+    pageNumber: 12
+  },
+  {
+    id: "cert-edunet-internship",
+    title: "Edunet & AICTE AI & Machine Learning 6-Week Internship",
+    issuer: "Edunet Foundation in collaboration with AICTE & IBM SkillsBuild",
+    category: "internship",
+    date: "18.06.2025 – 30.07.2025",
+    verificationId: "STU657aa855cd1cb1702537301",
+    details: "Successfully completed 6-week intensive training in Artificial Intelligence & Machine Learning technologies.",
+    fileName: "13.pdf",
+    filePath: "/certificates/13.pdf",
+    imagePath: "/certificates/13.pdf",
+    uploadedFileName: "13.pdf",
+    aliases: ["13.pdf", "edunet-aicte-ai-ml-internship.pdf"],
+    pageNumber: 14
+  },
+  {
+    id: "cert-bsnl-training",
+    title: "BSNL Internship Training Certificate",
+    issuer: "Bharat Sanchar Nigam Limited (BSNL), Govt of India Enterprise",
+    category: "internship",
+    date: "11.03.2024 – 15.03.2024",
+    verificationId: "No. AGM(HR&A)/TNJ/157/2023",
+    details: "Undergone practical telecom training covering digital communication, optical fibre infrastructure, and broadband technology at BSNL Thanjavur.",
+    fileName: "bsnl-telecom-internship.pdf",
+    filePath: "/certificates/bsnl-telecom-internship.pdf",
+    imagePath: "/certificates/bsnl-telecom-internship.pdf",
+    uploadedFileName: "bsnl-telecom-internship.pdf",
+    aliases: ["bsnl-telecom-internship.pdf", "bsnl.pdf"],
+    pageNumber: 13
+  },
   {
     id: "cert-kings-project-expo-2026",
     title: "Kings Project Expo '26 — Digital Oorai Display",
@@ -299,6 +478,8 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     fileName: "kings-project-expo-2026.pdf",
     filePath: "/certificates/kings-project-expo-2026.pdf",
     imagePath: "/certificates/kings-project-expo-2026.pdf",
+    uploadedFileName: "kings-project-expo-2026.pdf",
+    aliases: ["kings-project-expo-2026.pdf", "kings_expo.pdf"],
     pageNumber: 1
   },
   {
@@ -312,6 +493,8 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     fileName: "freq-fest-24.pdf",
     filePath: "/certificates/freq-fest-24.pdf",
     imagePath: "/certificates/freq-fest-24.pdf",
+    uploadedFileName: "freq-fest-24.pdf",
+    aliases: ["freq-fest-24.pdf", "freq_fest.pdf"],
     pageNumber: 2
   },
   {
@@ -325,161 +508,9 @@ export const CERTIFICATES_DATA: CertificateItem[] = [
     fileName: "acmet-2k25.pdf",
     filePath: "/certificates/acmet-2k25.pdf",
     imagePath: "/certificates/acmet-2k25.pdf",
+    uploadedFileName: "acmet-2k25.pdf",
+    aliases: ["acmet-2k25.pdf", "acmet.pdf"],
     pageNumber: 3
-  },
-  {
-    id: "cert-electrovibez-23",
-    title: "Electrovibez '23 National Level Technical Symposium — II Prize",
-    issuer: "Kings College of Engineering, Dept of ECE & IEEE",
-    category: "award",
-    date: "10.10.2023",
-    achievementLevel: "Second Prize Winner",
-    details: "Demonstrated project titled 'Bi-Directional visitor counter with light control' in the National Level Technical Symposium and won Second Prize.",
-    fileName: "electrovibez-23.pdf",
-    filePath: "/certificates/electrovibez-23.pdf",
-    imagePath: "/certificates/electrovibez-23.pdf",
-    pageNumber: 4
-  },
-  {
-    id: "cert-mini-project-expo-2023",
-    title: "Mini Project Expo 2023 — 1st Place",
-    issuer: "Kings College of Engineering, Dept of ECE & S&H",
-    category: "award",
-    date: "25.05.2023",
-    achievementLevel: "1st Place Winner",
-    details: "Won 1st Place in the Mini Project Expo organized by Department of Electronics and Communication Engineering.",
-    fileName: "mini-project-expo-2023.pdf",
-    filePath: "/certificates/mini-project-expo-2023.pdf",
-    imagePath: "/certificates/mini-project-expo-2023.pdf",
-    pageNumber: 5
-  },
-  {
-    id: "cert-mini-project-expo-2024",
-    title: "Mini Project Expo 2024 — II nd Position",
-    issuer: "Kings College of Engineering & ISTE Students Chapter",
-    category: "award",
-    date: "03.04.2024",
-    achievementLevel: "2nd Position Winner",
-    details: "Secured Second Position in the Mini Project Expo organized under ISTE Students Chapter TN 217.",
-    fileName: "mini-project-expo-2024.pdf",
-    filePath: "/certificates/mini-project-expo-2024.pdf",
-    imagePath: "/certificates/mini-project-expo-2024.pdf",
-    pageNumber: 6
-  },
-  {
-    id: "cert-ibm-credly",
-    title: "Artificial Intelligence Fundamentals",
-    issuer: "IBM SkillsBuild & Credly",
-    category: "certification",
-    date: "01.07.2025",
-    verificationId: "c9850c1b-ea3d-4e6c-a7f0-1ead9249e9b0",
-    details: "Officially recognized for commitment to professional excellence and satisfying all requirements for Artificial Intelligence Fundamentals. Verified badge on Credly.",
-    fileName: "ibm-skillsbuild-ai-fundamentals.pdf",
-    filePath: "/certificates/ibm-skillsbuild-ai-fundamentals.pdf",
-    imagePath: "/certificates/ibm-skillsbuild-ai-fundamentals.pdf",
-    pageNumber: 7
-  },
-  {
-    id: "cert-nxtwave-static",
-    title: "Build Your Own Static Website",
-    issuer: "NxtWave CCBP 4.0 Academy (NASSCOM)",
-    category: "certification",
-    date: "11.02.2025",
-    verificationId: "FPSQRCSCGL",
-    details: "Successfully completed hands-on coursework covering HTML5, CSS3, Bootstrap grid systems, and layout design designed by top alumni from Google, Amazon, and Microsoft.",
-    fileName: "nxtwave-build-static-website.pdf",
-    filePath: "/certificates/nxtwave-build-static-website.pdf",
-    imagePath: "/certificates/nxtwave-build-static-website.pdf",
-    pageNumber: 8
-  },
-  {
-    id: "cert-java-fullstack",
-    title: "Java Full Stack Development Certification",
-    issuer: "Unique Innovibe",
-    category: "certification",
-    date: "2024 – 2025",
-    details: "Comprehensive certification covering Core Java, Object-Oriented Programming, Java Full Stack architecture, database connectivity, and backend service integration.",
-    fileName: "java-full-stack-certification.pdf",
-    filePath: "/certificates/java-full-stack-certification.pdf",
-    imagePath: "/certificates/java-full-stack-certification.pdf",
-    pageNumber: 9,
-    isExcluded: true // Preserved in file, not displayed in gallery per user request
-  },
-  {
-    id: "cert-nxtwave-responsive",
-    title: "Build Your Own Responsive Website",
-    issuer: "NxtWave CCBP 4.0 Academy (NASSCOM)",
-    category: "certification",
-    date: "25.02.2025",
-    verificationId: "UFXPKMXZKP",
-    details: "Successfully completed advanced coursework covering responsive web design paradigms, Bootstrap frameworks, and modern CSS Flexbox architectures.",
-    fileName: "nxtwave-build-responsive-website.pdf",
-    filePath: "/certificates/nxtwave-build-responsive-website.pdf",
-    imagePath: "/certificates/nxtwave-build-responsive-website.pdf",
-    pageNumber: 10
-  },
-  {
-    id: "cert-iot-workshop-kings",
-    title: "Two Days Workshop on IoT with Arduino / Raspberry Pi",
-    issuer: "Centre of Excellence - IoT, Kings College of Engineering & IEEE",
-    category: "workshop",
-    date: "26.10.2023 – 27.10.2023",
-    details: "Hands-on two-day practical workshop on embedded prototyping, sensor integration, Arduino programming, and Raspberry Pi system interfacing.",
-    fileName: "iot-workshop-arduino-raspberry-pi.pdf",
-    filePath: "/certificates/iot-workshop-arduino-raspberry-pi.pdf",
-    imagePath: "/certificates/iot-workshop-arduino-raspberry-pi.pdf",
-    pageNumber: 11
-  },
-  {
-    id: "cert-ipr-mic-aicte",
-    title: "Role of Innovation in Startup Success & IPR / Patents",
-    issuer: "MIC AICTE Sponsored Impact Lecture Series & Kings College IIC",
-    category: "workshop",
-    date: "17.05.2024",
-    details: "Attended MIC AICTE sponsored impact lecture series on 'Role of Innovation in Startup Success and Enforcement of Intellectual Property Rights - Patents and Design'.",
-    fileName: "ipr-patents-innovation-lecture.pdf",
-    filePath: "/certificates/ipr-patents-innovation-lecture.pdf",
-    imagePath: "/certificates/ipr-patents-innovation-lecture.pdf",
-    pageNumber: 12
-  },
-  {
-    id: "cert-edunet-internship",
-    title: "Edunet & AICTE AI & Machine Learning 6-Week Internship",
-    issuer: "Edunet Foundation in collaboration with AICTE & IBM SkillsBuild",
-    category: "internship",
-    date: "30.07.2025",
-    verificationId: "STU657aa855cd1cb1702537301",
-    details: "Successfully completed 6-week intensive training in Artificial Intelligence & Machine Learning technologies.",
-    fileName: "edunet-aicte-ai-ml-internship.pdf",
-    filePath: "/certificates/edunet-aicte-ai-ml-internship.pdf",
-    imagePath: "/certificates/edunet-aicte-ai-ml-internship.pdf",
-    pageNumber: 14
-  },
-  {
-    id: "cert-bsnl-training",
-    title: "BSNL Internship Training Certificate",
-    issuer: "Bharat Sanchar Nigam Limited (BSNL), Govt of India Enterprise",
-    category: "internship",
-    date: "15.03.2024",
-    verificationId: "AGM(HR&A)/TNJ/157/2023",
-    details: "Undergone practical telecom training covering digital communication, optical fibre infrastructure, and broadband technology at BSNL Thanjavur.",
-    fileName: "bsnl-telecom-internship.pdf",
-    filePath: "/certificates/bsnl-telecom-internship.pdf",
-    imagePath: "/certificates/bsnl-telecom-internship.pdf",
-    pageNumber: 13
-  },
-  {
-    id: "cert-fantasy-solution",
-    title: "Fantasy Solution Certificate of Accomplishment",
-    issuer: "Fantasy Solution Software Development and Training, Trichy",
-    category: "internship",
-    date: "01.08.2025",
-    details: "Inplant training and internship course on Artificial Intelligence, practical algorithmic problem solving, and software engineering.",
-    fileName: "fantasy-solution-ai-training.pdf",
-    filePath: "/certificates/fantasy-solution-ai-training.pdf",
-    imagePath: "/certificates/fantasy-solution-ai-training.pdf",
-    pageNumber: 15,
-    isExcluded: true
   }
 ];
 
@@ -526,4 +557,4 @@ export const ACHIEVEMENTS_DATA = [
 ];
 
 export const AVATAR_SPEECH_SCRIPT = 
-  "Hi, welcome to my portfolio! I’m Suriyanarayanan R, a 2026 Electronics and Communication Engineering graduate from Kings College of Engineering. I graduated with 80.6% under Anna University. I’m interested in Java, web development, embedded systems, and IoT. Explore my projects and achievements, and feel free to connect with me. Thanks for visiting!";
+  "Hi, welcome to my portfolio! I’m Suriyanarayanan R, a 2026 Electronics and Communication Engineering graduate from Kings College of Engineering. I graduated with 80.6% under Anna University. I’m passionate about Java, web development, embedded systems, and IoT. Explore my projects and verified achievements, and feel free to connect with me. Thanks for visiting!";
