@@ -39,11 +39,16 @@ export const CertificatesSection: React.FC = () => {
     return matchesCategory && matchesSearch;
   });
 
-  const handleDownload = (cert: CertificateItem, e?: React.MouseEvent) => {
+  const handleDownload = (cert: CertificateItem, fileType: 'pdf' | 'image' = 'image', e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    const downloadUrl = (fileType === 'image' && cert.imagePath) ? cert.imagePath : cert.filePath;
+    const downloadName = fileType === 'image' 
+      ? (cert.uploadedFileName || `${cert.id}.jpeg`)
+      : (cert.fileName || `${cert.id}.pdf`);
+
     const link = document.createElement('a');
-    link.href = cert.filePath;
-    link.download = cert.uploadedFileName || cert.fileName || 'certificate.pdf';
+    link.href = downloadUrl;
+    link.download = downloadName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -51,7 +56,10 @@ export const CertificatesSection: React.FC = () => {
 
   const handleOpenPdf = (cert: CertificateItem, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    window.open(cert.filePath, '_blank', 'noopener,noreferrer');
+    const targetUrl = cert.filePath || cert.imagePath;
+    if (targetUrl) {
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -77,7 +85,7 @@ export const CertificatesSection: React.FC = () => {
           </div>
 
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-heading">
-            Certificates & <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600">Awards</span>
+            Certificates & <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-orange-500 to-red-500">Awards</span>
           </h2>
 
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl font-sans">
@@ -136,7 +144,7 @@ export const CertificatesSection: React.FC = () => {
                 viewport={{ once: false, amount: 0.15 }}
                 transition={{ duration: 0.5, delay: idx * 0.05 }}
                 whileHover={{ y: -6 }}
-                className="rounded-3xl bg-white border border-slate-200 hover:border-blue-400 shadow-[0_4px_25px_rgba(0,0,0,0.04)] hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group cursor-pointer"
+                className="rounded-3xl bg-white border border-slate-200/90 hover:border-blue-500 shadow-[0_4px_25px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_35px_rgba(37,99,235,0.12)] transition-all duration-300 flex flex-col justify-between overflow-hidden group cursor-pointer h-full min-h-[440px]"
                 onClick={() => {
                   setActiveModalCert(cert);
                   setModalZoom(1);
@@ -144,10 +152,11 @@ export const CertificatesSection: React.FC = () => {
                 }}
               >
                 {/* Certificate Visual Preview Canvas Header */}
-                <div className="relative w-full h-56 bg-slate-50 flex items-center justify-center overflow-hidden border-b border-slate-100">
-                  {/* Real original PDF page preview rendered via PDF.js with embedded object fallback */}
+                <div className="relative w-full h-56 bg-slate-50 flex items-center justify-center overflow-hidden border-b border-slate-100 p-2">
+                  {/* Real original PDF or JPEG image preview */}
                   <PdfCertificatePreview
                     pdfUrl={cert.filePath}
+                    imagePath={cert.imagePath}
                     title={cert.title}
                     className="group-hover:scale-105 transition-transform duration-300"
                   />
@@ -211,9 +220,9 @@ export const CertificatesSection: React.FC = () => {
                         <ExternalLink className="w-3.5 h-3.5" />
                       </button>
                       <button
-                        onClick={(e) => handleDownload(cert, e)}
+                        onClick={(e) => handleDownload(cert, 'image', e)}
                         className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold text-xs border border-blue-200 transition-colors cursor-pointer"
-                        title="Download original certificate PDF"
+                        title="Download original certificate"
                       >
                         <Download className="w-3.5 h-3.5" />
                         <span>Download</span>
@@ -324,6 +333,7 @@ export const CertificatesSection: React.FC = () => {
                   >
                     <PdfCertificatePreview
                       pdfUrl={activeModalCert.filePath}
+                      imagePath={activeModalCert.imagePath}
                       title={activeModalCert.title}
                       highResolution={true}
                       className="w-[740px] max-w-full h-[520px]"
@@ -349,21 +359,31 @@ export const CertificatesSection: React.FC = () => {
                   {activeModalCert.details}
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex flex-wrap items-center gap-2.5 shrink-0">
                   <button
                     onClick={() => handleOpenPdf(activeModalCert)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-blue-600 text-xs font-semibold border border-slate-200 shadow-xs transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-blue-600 text-xs font-semibold border border-slate-200 shadow-xs transition-all cursor-pointer"
                   >
-                    <ExternalLink className="w-4 h-4" />
-                    <span>View in New Tab</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Open in New Tab</span>
                   </button>
 
+                  {activeModalCert.imagePath && (
+                    <button
+                      onClick={() => handleDownload(activeModalCert, 'image')}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold transition-all cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download Image</span>
+                    </button>
+                  )}
+
                   <button
-                    onClick={() => handleDownload(activeModalCert)}
-                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-md transition-all cursor-pointer"
+                    onClick={() => handleDownload(activeModalCert, 'pdf')}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-md transition-all cursor-pointer"
                   >
-                    <Download className="w-4 h-4" />
-                    <span>Download Original PDF</span>
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download PDF</span>
                   </button>
                 </div>
               </div>

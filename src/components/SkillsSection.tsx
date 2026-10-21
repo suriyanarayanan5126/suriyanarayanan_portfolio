@@ -64,7 +64,7 @@ export const SkillsSection: React.FC = () => {
           </div>
 
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-heading">
-            Technical <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600">Arsenal</span>
+            Technical <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-orange-500 to-red-500">Arsenal</span>
           </h2>
 
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl font-sans">

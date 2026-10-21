@@ -34,7 +34,7 @@ export const EducationAchievements: React.FC = () => {
           </div>
 
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-heading">
-            Education & <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600">Achievements</span>
+            Education & <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-orange-500 to-red-500">Achievements</span>
           </h2>
 
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl font-sans">
@@ -160,20 +160,19 @@ export const EducationAchievements: React.FC = () => {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="p-6 sm:p-7 rounded-3xl bg-slate-50 border-2 border-dashed border-blue-300 transition-all duration-300"
               >
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center gap-3">
                   <div className="p-2.5 rounded-xl bg-blue-100 text-blue-700">
                     <Lock className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-heading font-bold text-slate-900 text-base">
+                    <h4 className="font-heading font-bold text-slate-900 text-base leading-snug">
                       Design and Implementation of a Digital Oorai Display using Embedded System
                     </h4>
-                    <span className="text-xs font-mono text-blue-700">Patent-Applied Academic Project</span>
+                    <span className="text-xs font-mono text-blue-700 font-semibold mt-1 inline-block">
+                      Patent-Applied Academic Project
+                    </span>
                   </div>
                 </div>
-                <p className="text-slate-600 text-xs font-sans italic">
-                  Confidential patent-pending intellectual property. Technical documentation, schematics, and code are protected under intellectual property filing protocol.
-                </p>
               </motion.div>
             </div>
           </motion.div>

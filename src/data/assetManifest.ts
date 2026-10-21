@@ -29,107 +29,89 @@ export const ASSET_MANIFEST: ManifestAsset[] = [
     fallbackPaths: ['/assets/profile/avatar.png', '/profile.jpg'],
     status: 'uploaded_session',
     isPubliclyVisible: true,
-    notes: 'Preserved in browser session storage and synced with profile display.'
+    notes: 'Preserved in project assets and browser session storage.'
   },
 
-  // --- PROJECT DEMONSTRATION VIDEOS ---
+  // --- PROJECT DEMONSTRATION VIDEOS (EXACT UPLOADED ASSETS) ---
   {
     id: 'video-smart-home',
     category: 'video',
-    title: 'IoT Smart Home Automation Video Demonstration',
-    filename: 'iot-smart-home.mp4',
-    primaryPath: '/assets/projects/iot-smart-home.mp4',
-    fallbackPaths: ['/videos/iot-smart-home.mp4'],
+    title: 'Smart Home Automation Video Demonstration',
+    filename: 'home automation video(1).mp4',
+    primaryPath: '/videos/home%20automation%20video(1).mp4',
+    fallbackPaths: [
+      '/assets/projects/home%20automation%20video(1).mp4',
+      '/videos/home automation video(1).mp4'
+    ],
     status: 'verified_available',
     isPubliclyVisible: true,
-    notes: 'Full working video demonstration for ESP32 relay switching and appliance control.'
+    notes: 'Real demonstration footage of ESP32 smart home automation controlling lights and fan.'
   },
   {
     id: 'video-visitor-counter',
     category: 'video',
     title: 'Bidirectional Visitor Counter Video Demonstration',
-    filename: 'visitor-counter.mp4',
-    primaryPath: '/assets/projects/visitor-counter.mp4',
-    fallbackPaths: ['/videos/visitor-counter.mp4'],
+    filename: 'visitor counter video(1).mp4',
+    primaryPath: '/videos/visitor%20counter%20video(1).mp4',
+    fallbackPaths: [
+      '/assets/projects/visitor%20counter%20video(1).mp4',
+      '/videos/visitor counter video(1).mp4'
+    ],
     status: 'verified_available',
     isPubliclyVisible: true,
-    notes: 'IR dual-beam sensor automated entry/exit counter with light control.'
+    notes: 'Real demonstration footage of IR dual-beam bidirectional visitor counter with automated light control.'
   },
   {
     id: 'video-scrolling-display',
     category: 'video',
     title: 'Smart Scrolling Display Video Demonstration',
-    filename: 'scrolling-display.mp4',
-    primaryPath: '/assets/projects/scrolling-display.mp4',
-    fallbackPaths: ['/videos/scrolling-display.mp4'],
+    filename: 'smart scrolling display video(1).mp4',
+    primaryPath: '/videos/smart%20scrolling%20display%20video(1).mp4',
+    fallbackPaths: [
+      '/assets/projects/smart%20scrolling%20display%20video(1).mp4',
+      '/videos/smart scrolling display video(1).mp4'
+    ],
     status: 'verified_available',
     isPubliclyVisible: true,
-    notes: 'Microcontroller LED dot matrix moving message display.'
+    notes: 'Real demonstration footage of LED dot matrix moving message board controlled via mobile app.'
   },
   {
     id: 'video-surveillance-car',
     category: 'video',
-    title: 'Surveillance Car Robotics Video Demonstration',
-    filename: 'surveillance-car.mp4',
-    primaryPath: '/assets/projects/surveillance-car.mp4',
-    fallbackPaths: ['/videos/surveillance-car.mp4'],
+    title: 'Surveillance Car Video Demonstration',
+    filename: 'survilliance car video(1).mp4',
+    primaryPath: '/videos/survilliance%20car%20video(1).mp4',
+    fallbackPaths: [
+      '/assets/projects/survilliance%20car%20video(1).mp4',
+      '/videos/survilliance car video(1).mp4'
+    ],
     status: 'verified_available',
     isPubliclyVisible: true,
-    notes: 'Remote robotics surveillance vehicle video footage.'
+    notes: 'Real demonstration footage of wireless motorized surveillance rover with headlight navigation.'
   },
   {
-    id: 'video-salary-prediction',
+    id: 'video-suriya-ai',
     category: 'video',
-    title: 'Suriya AI — Salary Prediction ML Video Demonstration',
-    filename: 'salary-prediction.mp4',
-    primaryPath: '/assets/projects/salary-prediction.mp4',
-    fallbackPaths: ['/videos/salary-prediction.mp4'],
+    title: 'Suriya AI Video Demonstration',
+    filename: 'suriya ai video(1).mp4',
+    primaryPath: '/videos/suriya%20ai%20video(1).mp4',
+    fallbackPaths: [
+      '/assets/projects/suriya%20ai%20video(1).mp4',
+      '/videos/suriya ai video(1).mp4'
+    ],
     status: 'verified_available',
     isPubliclyVisible: true,
-    notes: 'Machine learning workflow demonstration using Linear Regression.'
+    notes: 'Real demonstration footage of Suriya AI Snap & Study assistant powered by Gemini AI and Streamlit.'
   },
 
-  // --- CERTIFICATES 4 THROUGH 13 (CONFIRMED UPLOADED IN BATCH) ---
-  {
-    id: 'cert-electrovibez-23',
-    category: 'certificate',
-    title: "Electrovibez '23 National Level Technical Symposium — II Prize",
-    filename: 'electrovibez-23.pdf',
-    primaryPath: '/assets/certificates/electrovibez-23.pdf',
-    fallbackPaths: ['/certificates/electrovibez-23.pdf'],
-    status: 'verified_available',
-    isPubliclyVisible: true,
-    notes: 'Kings College of Engineering Dept of ECE & IEEE Second Prize.'
-  },
-  {
-    id: 'cert-mini-project-expo-2023',
-    category: 'certificate',
-    title: 'Mini Project Expo 2023 — 1st Place',
-    filename: 'mini-project-expo-2023.pdf',
-    primaryPath: '/assets/certificates/mini-project-expo-2023.pdf',
-    fallbackPaths: ['/certificates/mini-project-expo-2023.pdf'],
-    status: 'verified_available',
-    isPubliclyVisible: true,
-    notes: 'First Place Winner in Mini Project Expo by Dept of ECE & S&H.'
-  },
-  {
-    id: 'cert-mini-project-expo-2024',
-    category: 'certificate',
-    title: 'Mini Project Expo 2024 — II nd Position',
-    filename: 'mini-project-expo-2024.pdf',
-    primaryPath: '/assets/certificates/mini-project-expo-2024.pdf',
-    fallbackPaths: ['/certificates/mini-project-expo-2024.pdf'],
-    status: 'verified_available',
-    isPubliclyVisible: true,
-    notes: 'Secured Second Position under ISTE Students Chapter TN 217.'
-  },
+  // --- CERTIFICATES (ALL CONFIRMED UPLOADED ASSETS) ---
   {
     id: 'cert-ibm-credly',
     category: 'certificate',
     title: 'Artificial Intelligence Fundamentals',
-    filename: 'ibm-skillsbuild-ai-fundamentals.pdf',
-    primaryPath: '/assets/certificates/ibm-skillsbuild-ai-fundamentals.pdf',
-    fallbackPaths: ['/certificates/ibm-skillsbuild-ai-fundamentals.pdf'],
+    filename: '7.pdf',
+    primaryPath: '/certificates/7.pdf',
+    fallbackPaths: ['/assets/certificates/7.pdf'],
     status: 'verified_available',
     isPubliclyVisible: true,
     notes: 'IBM SkillsBuild & Credly verified badge (ID: c9850c1b-ea3d-4e6c-a7f0-1ead9249e9b0).'
@@ -138,31 +120,42 @@ export const ASSET_MANIFEST: ManifestAsset[] = [
     id: 'cert-nxtwave-static',
     category: 'certificate',
     title: 'Build Your Own Static Website',
-    filename: 'nxtwave-build-static-website.pdf',
-    primaryPath: '/assets/certificates/nxtwave-build-static-website.pdf',
-    fallbackPaths: ['/certificates/nxtwave-build-static-website.pdf'],
+    filename: '8.pdf',
+    primaryPath: '/certificates/8.pdf',
+    fallbackPaths: ['/assets/certificates/8.pdf'],
     status: 'verified_available',
     isPubliclyVisible: true,
     notes: 'NxtWave CCBP 4.0 Academy certified (ID: FPSQRCSCGL).'
   },
   {
+    id: 'cert-bsnl-training',
+    category: 'certificate',
+    title: 'Telecommunication & Networking Practical Training (BSNL)',
+    filename: '9c.jpeg',
+    primaryPath: '/assets/certificates/9c.jpeg',
+    fallbackPaths: ['/assets/certificates/bsnl-telecom-internship.pdf'],
+    status: 'verified_available',
+    isPubliclyVisible: true,
+    notes: 'Industrial internship practical training at BSNL Thanjavur (Ref: AGM(HR&A)/TNJ/157/2023).'
+  },
+  {
     id: 'cert-java-fullstack',
     category: 'certificate',
     title: 'Java Full Stack Development Certification',
-    filename: 'java-full-stack-certification.pdf',
-    primaryPath: '/assets/certificates/java-full-stack-certification.pdf',
-    fallbackPaths: ['/certificates/java-full-stack-certification.pdf'],
+    filename: '9.pdf',
+    primaryPath: '/assets/certificates/9.pdf',
+    fallbackPaths: ['/certificates/9.pdf'],
     status: 'hidden_confidential',
     isPubliclyVisible: false,
-    notes: 'Original file preserved permanently; hidden from public portfolio gallery per explicit user instruction.'
+    notes: 'Original 9.pdf preserved permanently; hidden from public portfolio gallery per explicit user instruction.'
   },
   {
     id: 'cert-nxtwave-responsive',
     category: 'certificate',
     title: 'Build Your Own Responsive Website',
-    filename: 'nxtwave-build-responsive-website.pdf',
-    primaryPath: '/assets/certificates/nxtwave-build-responsive-website.pdf',
-    fallbackPaths: ['/certificates/nxtwave-build-responsive-website.pdf'],
+    filename: '10.pdf',
+    primaryPath: '/certificates/10.pdf',
+    fallbackPaths: ['/assets/certificates/10.pdf'],
     status: 'verified_available',
     isPubliclyVisible: true,
     notes: 'NxtWave CCBP 4.0 Academy certified (ID: UFXPKMXZKP).'
@@ -171,20 +164,20 @@ export const ASSET_MANIFEST: ManifestAsset[] = [
     id: 'cert-iot-workshop-kings',
     category: 'certificate',
     title: 'Two Days Workshop on IoT with Arduino / Raspberry Pi',
-    filename: 'iot-workshop-arduino-raspberry-pi.pdf',
-    primaryPath: '/assets/certificates/iot-workshop-arduino-raspberry-pi.pdf',
-    fallbackPaths: ['/certificates/iot-workshop-arduino-raspberry-pi.pdf'],
+    filename: '11.pdf',
+    primaryPath: '/certificates/11.pdf',
+    fallbackPaths: ['/assets/certificates/11.pdf'],
     status: 'verified_available',
     isPubliclyVisible: true,
-    notes: 'Centre of Excellence - IoT, Kings College & IEEE.'
+    notes: 'Centre of Excellence - IoT, Kings College of Engineering & IEEE.'
   },
   {
     id: 'cert-ipr-mic-aicte',
     category: 'certificate',
     title: 'Role of Innovation in Startup Success & IPR / Patents',
-    filename: 'ipr-patents-innovation-lecture.pdf',
-    primaryPath: '/assets/certificates/ipr-patents-innovation-lecture.pdf',
-    fallbackPaths: ['/certificates/ipr-patents-innovation-lecture.pdf'],
+    filename: '12 (2).pdf',
+    primaryPath: '/certificates/12%20(2).pdf',
+    fallbackPaths: ['/assets/certificates/12%20(2).pdf', '/certificates/12.pdf'],
     status: 'verified_available',
     isPubliclyVisible: true,
     notes: 'MIC AICTE Sponsored Impact Lecture Series & Kings College IIC.'
@@ -193,58 +186,78 @@ export const ASSET_MANIFEST: ManifestAsset[] = [
     id: 'cert-edunet-internship',
     category: 'certificate',
     title: 'Edunet & AICTE AI & Machine Learning 6-Week Internship',
-    filename: 'edunet-aicte-ai-ml-internship.pdf',
-    primaryPath: '/assets/certificates/edunet-aicte-ai-ml-internship.pdf',
-    fallbackPaths: ['/certificates/edunet-aicte-ai-ml-internship.pdf'],
+    filename: '13.pdf',
+    primaryPath: '/certificates/13.pdf',
+    fallbackPaths: ['/assets/certificates/13.pdf'],
     status: 'verified_available',
     isPubliclyVisible: true,
-    notes: 'AICTE & Edunet Foundation (Student ID: STU657aa855cd1cb1702537301).'
+    notes: 'AICTE & Edunet Foundation (Student STU ID: STU657aa855cd1cb1702537301).'
   },
-
-  // --- CERTIFICATES PENDING DIRECT UPLOAD ---
+  {
+    id: 'cert-electrovibez-23',
+    category: 'certificate',
+    title: "Electrovibez '23 National Level Technical Symposium — II Prize",
+    filename: '4elec23.pdf',
+    primaryPath: '/certificates/4elec23.pdf',
+    fallbackPaths: ['/assets/certificates/4elec23.pdf', '/certificates/electrovibez-23.pdf'],
+    status: 'verified_available',
+    isPubliclyVisible: true,
+    notes: 'Kings College of Engineering Dept of ECE & IEEE Second Prize.'
+  },
+  {
+    id: 'cert-mini-project-expo-2023',
+    category: 'certificate',
+    title: 'Mini Project Expo 2023 — 1st Place',
+    filename: '5.pdf',
+    primaryPath: '/certificates/5.pdf',
+    fallbackPaths: ['/assets/certificates/5.pdf', '/certificates/mini-project-expo-2023.pdf'],
+    status: 'verified_available',
+    isPubliclyVisible: true,
+    notes: 'First Place Winner in Mini Project Expo by Dept of ECE & S&H.'
+  },
+  {
+    id: 'cert-mini-project-expo-2024',
+    category: 'certificate',
+    title: 'Mini Project Expo 2024 — II nd Position',
+    filename: '6.pdf',
+    primaryPath: '/certificates/6.pdf',
+    fallbackPaths: ['/assets/certificates/6.pdf', '/certificates/mini-project-expo-2024.pdf'],
+    status: 'verified_available',
+    isPubliclyVisible: true,
+    notes: 'Secured Second Position under ISTE Students Chapter TN 217.'
+  },
   {
     id: 'cert-kings-project-expo-2026',
     category: 'certificate',
     title: "Kings Project Expo '26 — Digital Oorai Display",
-    filename: 'kings-project-expo-2026.pdf',
-    primaryPath: '/assets/certificates/kings-project-expo-2026.pdf',
-    fallbackPaths: ['/certificates/kings-project-expo-2026.pdf'],
-    status: 'pending_upload',
+    filename: 'kings26.pdf',
+    primaryPath: '/certificates/kings26.pdf',
+    fallbackPaths: ['/assets/certificates/kings26.pdf', '/certificates/kings-project-expo-2026.pdf'],
+    status: 'verified_available',
     isPubliclyVisible: true,
-    notes: 'Pending initial upload; will automatically activate as soon as file is placed.'
+    notes: "Kings College of Engineering (Autonomous) & IEEE Certificate of Appreciation."
   },
   {
     id: 'cert-freq-fest-24',
     category: 'certificate',
     title: 'Freq Fest 24 International Student Symposium — 1st Place',
-    filename: 'freq-fest-24.pdf',
-    primaryPath: '/assets/certificates/freq-fest-24.pdf',
-    fallbackPaths: ['/certificates/freq-fest-24.pdf'],
-    status: 'pending_upload',
+    filename: '2egs.pdf',
+    primaryPath: '/certificates/2egs.pdf',
+    fallbackPaths: ['/assets/certificates/2egs.pdf', '/certificates/freq-fest-24.pdf'],
+    status: 'verified_available',
     isPubliclyVisible: true,
-    notes: 'Pending initial upload; 1st prize certificate from E.G.S. Pillay Engg College.'
+    notes: 'First place winner in Economic Electronic Garments Design at E.G.S. Pillay Engg College.'
   },
   {
     id: 'cert-acmet-2k25',
     category: 'certificate',
     title: "Acmet '2k25 13th National Level Technical Fest — I Prize",
-    filename: 'acmet-2k25.pdf',
-    primaryPath: '/assets/certificates/acmet-2k25.pdf',
-    fallbackPaths: ['/certificates/acmet-2k25.pdf'],
-    status: 'pending_upload',
+    filename: '3mam.pdf',
+    primaryPath: '/certificates/3mam.pdf',
+    fallbackPaths: ['/assets/certificates/3mam.pdf', '/certificates/acmet-2k25.pdf'],
+    status: 'verified_available',
     isPubliclyVisible: true,
-    notes: 'Pending initial upload; First prize certificate from M.A.M. School of Engg.'
-  },
-  {
-    id: 'cert-bsnl-training',
-    category: 'certificate',
-    title: 'BSNL Internship Training Certificate',
-    filename: 'bsnl-telecom-internship.pdf',
-    primaryPath: '/assets/certificates/bsnl-telecom-internship.pdf',
-    fallbackPaths: ['/certificates/bsnl-telecom-internship.pdf'],
-    status: 'pending_upload',
-    isPubliclyVisible: true,
-    notes: 'Pending initial upload; Industrial training at BSNL Thanjavur.'
+    notes: 'First prize in Innovation Expo at M.A.M. School of Engineering.'
   }
 ];
 
@@ -254,8 +267,4 @@ export const getPublicCertificates = () => {
 
 export const getVerifiedCertificates = () => {
   return ASSET_MANIFEST.filter(a => a.category === 'certificate' && a.status === 'verified_available' && a.isPubliclyVisible);
-};
-
-export const getPendingCertificates = () => {
-  return ASSET_MANIFEST.filter(a => a.category === 'certificate' && a.status === 'pending_upload');
 };

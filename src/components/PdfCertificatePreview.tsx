@@ -9,6 +9,7 @@ if (typeof window !== 'undefined') {
 
 interface PdfCertificatePreviewProps {
   pdfUrl: string;
+  imagePath?: string;
   title: string;
   className?: string;
   highResolution?: boolean;
@@ -16,6 +17,7 @@ interface PdfCertificatePreviewProps {
 
 export const PdfCertificatePreview: React.FC<PdfCertificatePreviewProps> = ({
   pdfUrl,
+  imagePath,
   title,
   className = '',
   highResolution = false,
@@ -23,8 +25,28 @@ export const PdfCertificatePreview: React.FC<PdfCertificatePreviewProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [renderedImage, setRenderedImage] = useState<string | null>(null);
   const [renderStatus, setRenderStatus] = useState<'loading' | 'success' | 'fallback'>('loading');
+  const [imgError, setImgError] = useState(false);
+
+  // Check if we have a direct image path or if pdfUrl is an image file
+  const isImageFile = (url?: string) => {
+    if (!url) return false;
+    const lower = url.toLowerCase();
+    return lower.endsWith('.jpeg') || lower.endsWith('.jpg') || lower.endsWith('.png') || lower.endsWith('.webp') || lower.endsWith('.svg');
+  };
+
+  const directImage = (!imgError && imagePath && isImageFile(imagePath)) 
+    ? imagePath 
+    : (!imgError && isImageFile(pdfUrl)) 
+      ? pdfUrl 
+      : null;
 
   useEffect(() => {
+    // If we have a direct original image available, skip PDF.js and render directly
+    if (directImage) {
+      setRenderStatus('success');
+      return;
+    }
+
     let isCancelled = false;
     let renderTask: any = null;
 
@@ -55,8 +77,8 @@ export const PdfCertificatePreview: React.FC<PdfCertificatePreviewProps> = ({
 
         // Calculate scale for sharp retina rendering
         const unscaledViewport = page.getViewport({ scale: 1 });
-        const targetWidth = highResolution ? 1000 : 540;
-        const scale = Math.max(1.4, targetWidth / unscaledViewport.width);
+        const targetWidth = highResolution ? 1200 : 600;
+        const scale = Math.max(1.5, targetWidth / unscaledViewport.width);
         const viewport = page.getViewport({ scale });
 
         canvas.width = viewport.width;
@@ -72,7 +94,7 @@ export const PdfCertificatePreview: React.FC<PdfCertificatePreviewProps> = ({
         if (isCancelled) return;
 
         try {
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
           if (!isCancelled) {
             setRenderedImage(dataUrl);
             setRenderStatus('success');
@@ -103,12 +125,23 @@ export const PdfCertificatePreview: React.FC<PdfCertificatePreviewProps> = ({
         }
       }
     };
-  }, [pdfUrl, highResolution]);
+  }, [pdfUrl, directImage, highResolution]);
 
   return (
     <div className={`relative w-full h-full bg-slate-50 flex items-center justify-center overflow-hidden ${className}`}>
-      {/* 1. Captured Image Snapshot (Best performance & responsiveness) */}
-      {renderStatus === 'success' && renderedImage && (
+      {/* 1. Direct Original Image (Fastest, crispest, 100% genuine original scanned certificate) */}
+      {directImage && (
+        <img
+          src={directImage}
+          alt={title}
+          onError={() => setImgError(true)}
+          className="w-full h-full object-contain select-none"
+          loading="lazy"
+        />
+      )}
+
+      {/* 2. Captured Image Snapshot from PDF.js */}
+      {!directImage && renderStatus === 'success' && renderedImage && (
         <img
           src={renderedImage}
           alt={title}
@@ -117,16 +150,18 @@ export const PdfCertificatePreview: React.FC<PdfCertificatePreviewProps> = ({
         />
       )}
 
-      {/* 2. Direct Canvas Render (when data URL is not used) */}
-      <canvas
-        ref={canvasRef}
-        className={`w-full h-full object-contain ${
-          renderStatus === 'success' && !renderedImage ? 'block' : 'hidden'
-        }`}
-      />
+      {/* 3. Direct Canvas Render (when data URL is not used) */}
+      {!directImage && (
+        <canvas
+          ref={canvasRef}
+          className={`w-full h-full object-contain ${
+            renderStatus === 'success' && !renderedImage ? 'block' : 'hidden'
+          }`}
+        />
+      )}
 
-      {/* 3. Embedded PDF Object / Iframe Fallback */}
-      {renderStatus === 'fallback' && (
+      {/* 4. Embedded PDF Object / Iframe Fallback */}
+      {!directImage && renderStatus === 'fallback' && (
         <div className="w-full h-full relative flex items-center justify-center bg-slate-100">
           <object
             data={`${pdfUrl}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
@@ -143,11 +178,11 @@ export const PdfCertificatePreview: React.FC<PdfCertificatePreviewProps> = ({
         </div>
       )}
 
-      {/* 4. Loading Spinner */}
-      {renderStatus === 'loading' && (
+      {/* 5. Loading Spinner */}
+      {!directImage && renderStatus === 'loading' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50/90 text-slate-500 gap-2 font-mono text-xs z-10">
           <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
-          <span>Rendering Original PDF...</span>
+          <span>Rendering Original Document...</span>
         </div>
       )}
     </div>

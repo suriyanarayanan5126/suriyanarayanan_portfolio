@@ -45,7 +45,7 @@ export const ProjectsSection: React.FC = () => {
           </div>
 
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-heading">
-            Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600">Projects</span>
+            Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-orange-500 to-red-500">Projects</span>
           </h2>
 
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl font-sans">
@@ -110,11 +110,6 @@ export const ProjectsSection: React.FC = () => {
                       Design and Implementation of a Digital Oorai Display using Embedded System
                     </h3>
                   </div>
-
-                  {/* Non-technical Confidentiality Notice */}
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200 text-xs text-slate-600 font-sans leading-relaxed">
-                    Technical details, circuit designs, source code, and implementation data are confidential pursuant to intellectual property patent filing.
-                  </div>
                 </motion.div>
               );
             }
@@ -163,6 +158,7 @@ export const ProjectsSection: React.FC = () => {
                           poster={project.thumbnailUrl}
                           className="w-full h-full object-contain"
                         >
+                          <source src={`/assets/projects/${project.videoFileName}`} type="video/mp4" />
                           <source src={`/videos/${encodeURIComponent(project.videoFileName)}`} type="video/mp4" />
                           <source src={`/assets/projects/${encodeURIComponent(project.videoFileName)}`} type="video/mp4" />
                           <source src={project.videoPath} type="video/mp4" />

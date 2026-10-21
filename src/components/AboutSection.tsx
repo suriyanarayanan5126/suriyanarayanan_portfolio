@@ -73,7 +73,7 @@ export const AboutSection: React.FC = () => {
           </div>
           
           <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-heading">
-            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600">Suriyanarayanan</span>
+            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-orange-500 to-red-500">Suriyanarayanan</span>
           </h2>
           
           <p className="text-slate-600 text-base max-w-2xl font-sans leading-relaxed">

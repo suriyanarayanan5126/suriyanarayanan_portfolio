@@ -79,7 +79,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
             {/* Name Presentation */}
             <div className="space-y-3">
               <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-slate-900 tracking-tight font-heading leading-tight">
-                Suriyanarayanan <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600">R</span>
+                Suriyanarayanan <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-orange-500 to-red-500">R</span>
               </h1>
 
               {/* Exact Requested Title */}
@@ -118,7 +118,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
               {/* 1. View My Projects */}
               <a
                 href="#projects"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all cursor-pointer group"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-semibold text-sm shadow-[0_4px_20px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_25px_rgba(37,99,235,0.35)] transition-all cursor-pointer group"
               >
                 <FolderGit2 className="w-4 h-4" />
                 <span>View My Projects</span>
